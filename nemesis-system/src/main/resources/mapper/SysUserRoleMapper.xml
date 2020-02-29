@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lsjyy.nemesis.system.dao.SysUserRoleMapper">
+
+    <select id="selectUserInterface" resultMap="userInterfaceMap">
+        SELECT sys_user_id,role_id FROM sys_user_role  WHERE sys_user_id = #{sysUserId};
+    </select>
+
+    <resultMap id="userInterfaceMap" type="com.lsjyy.nemesis.system.pojo.dto.UserRoleInterfaceDTO">
+        <result column="sys_user_id" property="sysUserId"/>
+        <collection property="interfaceIdList" column="role_id" select="selectInterface"/>
+    </resultMap>
+
+    <select id="selectInterface" resultType="string">
+        SELECT interface_id FROM role_interface WHERE role_id = #{role_id}
+    </select>
+</mapper>

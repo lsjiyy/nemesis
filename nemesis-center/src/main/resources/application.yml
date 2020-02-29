@@ -1,0 +1,20 @@
+server:
+  port: 8787
+
+
+
+spring:
+  application:
+    name: nemesis-center
+
+eureka:
+  server:
+    enable-self-preservation: true  # 关闭自我保护机制 开发的时候可以开启 保证不可用的服务能够及时剔除
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: false #是否要注册到其他Server上
+    fetchRegistry: false #是否需要拉取服务信息。和是否注册一样
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/   #Eureka服务地址
+

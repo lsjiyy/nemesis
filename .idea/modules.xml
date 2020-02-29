@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/nemesis.iml" filepath="$PROJECT_DIR$/nemesis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nemesis-activity/nemesis-activity.iml" filepath="$PROJECT_DIR$/nemesis-activity/nemesis-activity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nemesis-cargo/nemesis-cargo.iml" filepath="$PROJECT_DIR$/nemesis-cargo/nemesis-cargo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nemesis-center/nemesis-center.iml" filepath="$PROJECT_DIR$/nemesis-center/nemesis-center.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nemesis-common/nemesis-common.iml" filepath="$PROJECT_DIR$/nemesis-common/nemesis-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nemesis-email/nemesis-email.iml" filepath="$PROJECT_DIR$/nemesis-email/nemesis-email.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nemesis-employee/nemesis-employee.iml" filepath="$PROJECT_DIR$/nemesis-employee/nemesis-employee.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nemesis-gateway/nemesis-gateway.iml" filepath="$PROJECT_DIR$/nemesis-gateway/nemesis-gateway.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nemesis-mouse/nemesis-mouse.iml" filepath="$PROJECT_DIR$/nemesis-mouse/nemesis-mouse.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nemesis-parasite/nemesis-parasite.iml" filepath="$PROJECT_DIR$/nemesis-parasite/nemesis-parasite.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nemesis-system/nemesis-system.iml" filepath="$PROJECT_DIR$/nemesis-system/nemesis-system.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nemesis-web/nemesis-web.iml" filepath="$PROJECT_DIR$/nemesis-web/nemesis-web.iml" />
+    </modules>
+  </component>
+</project>

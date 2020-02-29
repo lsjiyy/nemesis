@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lsjyy.nemesis.email.dao.EmailHistoryMapper">
+    <insert id="insert" parameterType="com.lsjyy.nemesis.email.pojo.EmailHistory">
+        INSERT INTO email_history (email_id, receive_email, email_type, content, status, create_time)
+        VALUES (#{emailId}, #{receiveEmail}, #{emailType}, #{content}, #{status}, sysdate())
+    </insert>
+</mapper>

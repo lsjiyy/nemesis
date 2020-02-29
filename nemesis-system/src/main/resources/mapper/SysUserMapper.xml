@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lsjyy.nemesis.system.dao.SysUserMapper">
+
+    <sql id="baseColumn">
+        sys_user_id, user_name, login_name, password, email, login_ip, login_time, remark, status, deal_flag
+    </sql>
+
+    <update id="updateLogin">
+        UPDATE sys_user SET login_ip = #{ip} ,login_time =sysdate() WHERE sys_user_id = #{sysUserId}
+    </update>
+
+    <select id="selectByLoginName" resultType="com.lsjyy.nemesis.system.pojo.SysUser">
+        SELECT <include refid="baseColumn"/> FROM sys_user WHERE login_name = #{loginName}
+    </select>
+</mapper>

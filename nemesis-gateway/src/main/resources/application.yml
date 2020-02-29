@@ -1,0 +1,91 @@
+server:
+  port: 8788
+
+spring:
+  application:
+    name: nemesis-gateway
+  redis:
+    password: 2927213lsjyy
+    lettuce:
+      pool:
+        max-active: 1000 #连接池最大连接数（使用负值表示没有限制）
+        max-idle: 10 # 连接池中的最大空闲连接
+        min-idle: 5
+        max-wait: -1ms # 连接池中的最小空闲连接 # 连接池最大阻塞等待时间（使用负值表示没有限制）
+    sentinel: #哨兵模式
+      master: mymaster
+      nodes:
+        - 118.89.238.168:23824
+        - 47.104.60.115:23824
+        - 49.234.205.96:23824
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false #开启服务注册和发现的功能,并将发现的每一个服务自动创建了router
+          lower-case-service-id: true #将请求路径上的服务名配置为小写
+      routes:
+        - id: nemesis-web  #web
+          uri: lb://NEMESIS-WEB
+          predicates:
+            - Path=/web/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                 key-resolver: '#{@uriKeyResolver}'
+                 redis-rate-limiter.replenishRate: 2500
+                 redis-rate-limiter.burstCapacity: 5000
+            - StripPrefix=1
+        - id: nemesis-employee #人员
+          uri: lb://NEMESIS-EMPLOYEE
+          predicates:
+            - Path=/emp/**
+          filters:
+            - StripPrefix=1
+        - id: nemesis-system #系统
+          uri: lb://NEMESIS-SYSTEM
+          predicates:
+            - Path=/sys/**
+          filters:
+            - StripPrefix=1
+        - id: nemesis-cargo #货物
+          uri: lb://NEMESIS-CARGO
+          predicates:
+            - Path=/cargo/**
+          filters:
+            - StripPrefix=1
+        - id: nemesis-mouse #老鼠
+          uri: lb://NEMESIS-MOUSE
+          predicates:
+            - Path=/mouse/**
+          filters:
+            - StripPrefix=1
+        - id: nemesis-email #邮件
+          uri: lb://NEMESIS-EMAIL
+          predicates:
+            - Path=/email/**
+          filters:
+            - StripPrefix=1
+      # 全局过滤器
+      default-filters:
+        # 全局断路器
+        - name: Hystrix
+          args:
+            name: fallbackcmd
+            fallbackUri: forward:/fallback
+hystrix.command.fallbackcmd.execution.isolation.thread.timeoutInMilliseconds: 10000 # 10s 服务连不上触发回滚
+
+#eureka
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8787/eureka/ #注册中心地址
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+
+

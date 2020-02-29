@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lsjyy.nemesis.system.dao.OperateHistoryMapper">
+
+    <insert id="insert" parameterType="com.lsjyy.nemesis.system.pojo.OperateHistory">
+        INSERT INTO operate_history (history_id, sys_user_id, record_module, operate_type, args, status, ip, create_time)
+        VALUES (#{historyId}, #{sysUserId}, #{recordModule}, #{operateType}, #{args}, #{status}, #{ip}, #{createTime})
+    </insert>
+</mapper>

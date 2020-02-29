@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nemesis-activity" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nemesis-cargo" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nemesis-center" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nemesis-common" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nemesis-email" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nemesis-employee" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nemesis-gateway" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nemesis-kafkamq" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nemesis-mouse" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nemesis-parasite" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nemesis-system" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nemesis-web" charset="UTF-8" />
+  </component>
+</project>

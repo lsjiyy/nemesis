@@ -1,0 +1,55 @@
+server:
+  port: 8088
+
+
+spring:
+  application:
+    name: nemesis-email
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://118.89.238.168/nemesis?useSSL=false&characterEncoding=utf-8
+    password: 2927213lsj
+    username: lsjyy
+  mail:
+    host: smtp.163.com
+    username: 17600716687@163.com
+    password: 2927213lsj  #授权码
+    port: 465
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+  freemarker:
+    template-loader-path: classpath:/templates/ #模板路径
+    suffix: .ftl #模板后缀名
+    prefer-file-system-access: true # 是否优先从文件系统加载template，以支持热加载，默认为true
+    enabled: true #是否启用freemarker
+    content-type: text/html
+    charset: utf-8
+    cache: false
+    settings:
+      default_encoding: utf-8
+
+
+logging:
+    level:
+        root: INFO
+        org.springframework: INFO
+        com.lsjyy.nemesis.email: DEBUG
+        com.baomidou.mybatisplus: INFO
+
+#eureka
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8787/eureka/  #注册中心地址
+#开启断路器
+feign.hystrix.enabled: true
+
+mybatis-plus:
+  configuration:
+    default-fetch-size: 100
+    default-statement-timeout: 30
+  mapper-locations: classpath*:**/mapper/*Mapper.xml #mapper扫描
+  type-aliases-package: com.lsjyy.nemesis.email.pojo

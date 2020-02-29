@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="nemesis-activity" />
+        <module name="nemesis-cargo" />
+        <module name="nemesis-center" />
+        <module name="nemesis-common" />
+        <module name="nemesis-email" />
+        <module name="nemesis-employee" />
+        <module name="nemesis-gateway" />
+        <module name="nemesis-mouse" />
+        <module name="nemesis-parasite" />
+        <module name="nemesis-system" />
+        <module name="nemesis-web" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="nemesis" target="1.8" />
+      <module name="nemesis-activity" target="1.8" />
+      <module name="nemesis-cargo" target="1.8" />
+      <module name="nemesis-center" target="1.8" />
+      <module name="nemesis-common" target="1.8" />
+      <module name="nemesis-email" target="1.8" />
+      <module name="nemesis-employee" target="1.8" />
+      <module name="nemesis-gateway" target="1.8" />
+      <module name="nemesis-kafkamq" target="1.8" />
+      <module name="nemesis-mouse" target="1.8" />
+      <module name="nemesis-parasite" target="1.8" />
+      <module name="nemesis-system" target="1.8" />
+      <module name="nemesis-web" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

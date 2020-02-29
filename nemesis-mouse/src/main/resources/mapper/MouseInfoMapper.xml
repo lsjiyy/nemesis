@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lsjyy.nemesis.mouse.dao.MouseInfoMapper">
+    <sql id="baseColumn">
+        mouse_id, nick_name, login_name, password, email, status, star, register_time
+    </sql>
+
+    <insert id="insert" parameterType="com.lsjyy.nemesis.mouse.pojo.MouseInfo">
+        INSERT INTO mouse_info(mouse_id, nick_name, login_name, password, email, status, star, register_time)
+        VALUES (#{mouseId}, #{nickName}, #{loginName}, #{password}, #{email}, #{status}, 0, sysdate())
+    </insert>
+
+    <update id="updateStatus">
+        UPDATE mouse_info SET status = #{status} WHERE mouse_id = #{mouseId}
+    </update>
+
+    <select id="existLoginName" resultType="java.lang.Boolean">
+       SELECT count(0) FROM mouse_info WHERE login_name = #{loginName}
+    </select>
+
+    <select id="existEmail" resultType="java.lang.Boolean">
+        SELECT count(0) FROM mouse_info WHERE email = #{email}
+    </select>
+
+    <select id="selectByEmail" resultType="com.lsjyy.nemesis.mouse.pojo.MouseInfo">
+        SELECT <include refid="baseColumn"/> FROM mouse_info WHERE email = #{email}
+    </select>
+
+    <select id="selectByLoginName" resultType="com.lsjyy.nemesis.mouse.pojo.MouseInfo">
+        SELECT <include refid="baseColumn"/> FROM mouse_info WHERE login_name = #{loginName}
+    </select>
+
+    <select id="selectByMouseId" resultType="com.lsjyy.nemesis.mouse.pojo.MouseInfo">
+        SELECT <include refid="baseColumn"/> FROM mouse_info WHERE mouse_id = #{mouseId}
+    </select>
+</mapper>
