@@ -3,7 +3,7 @@ package com.lsjyy.nemesis.web.controller;
 import com.lsjyy.nemesis.common.aop.Logging;
 import com.lsjyy.nemesis.common.domain.AjaxResult;
 import com.lsjyy.nemesis.common.redis.RedisUtil;
-import com.lsjyy.nemesis.web.mq.SendService;
+import com.lsjyy.nemesis.web.kafka.KafkaMsgProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @Authoer LsjYy
@@ -25,7 +24,7 @@ public class TestControl {
     private static final Logger log = LoggerFactory.getLogger(TestControl.class);
 
     @Autowired
-    private SendService sendService;
+    private KafkaMsgProducer msgProducer;
 
     @Resource
     private RedisUtil redisUtil;
@@ -33,7 +32,7 @@ public class TestControl {
     @Logging(module = "web", operateExplain = "测试")
     @GetMapping
     public AjaxResult test(String message) throws Exception {
-        sendService.sendMsg(message);
+        msgProducer.sendMessage(message);
 
         return AjaxResult.success();
     }

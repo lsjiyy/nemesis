@@ -3,9 +3,11 @@ package com.lsjyy.nemesis.email;
 import com.lsjyy.nemesis.common.domain.AjaxResult;
 import com.lsjyy.nemesis.common.domain.mail.SendMailVO;
 import com.lsjyy.nemesis.email.service.MailService;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,6 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SpringBootApplication
+@MapperScan("com.lsjyy.nemesis.email.dao")
+@ComponentScan("com.lsjyy.nemesis.email")
 @RestController
 
 public class NemesisEmailApplication {

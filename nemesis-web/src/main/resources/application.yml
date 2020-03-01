@@ -53,16 +53,27 @@ spring:
           wall:
               config:
                   multi-statement-allow: true
-  cloud:
-    stream:
-      kafka:
-        binder:
-          brokers: 118.89.238.168:9092,49.234.205.96:9092,47.104.60.115:9092
-          auto-create-topics: true #如果设置为false,就不会自动创建Topic 有可能你Topic还没创建就直接调用了。
-      bindings:
-        myOutput:      #这里用stream给我们提供的默认output，后面会讲到自定义output
-           destination: stream-demo    #消息发往的目的地
-           content-type: application/json    #消息发送的格式，接收端不用指定格式，但是发送端要
+  kafka:
+    #kafka集群
+    bootstrap-servers: 118.89.238.168:9092,49.234.205.96:9092,47.104.60.115:9092
+    producer:
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer #序列化
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer #序列化
+      # acks=0 ： 生产者在成功写入消息之前不会等待任何来自服务器的响应。
+      # acks=1 ： 只要集群的首领节点收到消息，生产者就会收到一个来自服务器成功响应。
+      # acks=all ：只有当所有参与复制的节点全部收到消息时，生产者才会收到一个来自服务器的成功响应。
+      acks: all
+      retries: 3 #消息发送失败重试次数
+      #kafka可使用内存大小
+      buffer-memory: 33554432 #kafka客户端发送服务器数据,不是来一条发一条,是经过缓冲的,多条消息成为一个batch
+      #一个批次可使用内存大小
+      batch-size: 16384 #默认大小16kb 每个Batch要存放batch.size大小的数据后才能发送出去
+    listener:
+      #listner负责ack，每调用一次，就立即commit
+      ack-mode: manual_immediate
+      # 在侦听器容器中运行的线程数。
+      concurrency: 5
+
 
 
 #eureka
