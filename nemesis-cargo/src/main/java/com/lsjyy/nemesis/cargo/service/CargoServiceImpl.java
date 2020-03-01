@@ -42,20 +42,20 @@ public class CargoServiceImpl implements CargoService {
     private CollectCargoMapper collectMapper;
 
     //每10秒
-    //@Scheduled(cron = " 0/40 * * * * ?")
+    @Scheduled(fixedRate = 360000)
     @Override
     public void cacheCargoList() {
         log.info("运行");
         List<CargoSampleDTO> dtoList = cargoInfoMapper.selectNormalSample();
         dtoList.forEach(dto -> {
-            redisUtil.setValue(RedisKey.CARGO + dto.getCargoId(), JSONObject.toJSONString(dto));
+            redisUtil.putString(RedisKey.CARGO + dto.getCargoId(), JSONObject.toJSONString(dto));
         });
     }
 
     @Override
     public List<CargoSampleDTO> getCargoList() {
         List<CargoSampleDTO> dtoList = new ArrayList<>();
-        Set<String> cargoSet = redisUtil.likeGet(RedisKey.CARGO + "*");
+        List<String> cargoSet = redisUtil.getScanKeys(RedisKey.CARGO + "*");
         List<Object> cargoObjList = redisUtil.multiStringGet(cargoSet);
         cargoObjList.forEach(cargoObj -> {
             CargoSampleDTO dto = JSONObject.parseObject(cargoObj.toString(), CargoSampleDTO.class);
@@ -72,7 +72,7 @@ public class CargoServiceImpl implements CargoService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void rushCargo(String cargoId) {
-        Object objDto = redisUtil.getValue(RedisKey.CARGO + cargoId);
+        Object objDto = redisUtil.getStringValue(RedisKey.CARGO + cargoId);
         if (objDto == null) {
             return;
         }
@@ -91,7 +91,7 @@ public class CargoServiceImpl implements CargoService {
             } else {
                 //更新缓存内容
                 dto.setInventory(dto.getInventory() - 1);
-                redisUtil.setValue(RedisKey.CARGO + cargoId, JSONObject.toJSONString(dto));
+                redisUtil.putString(RedisKey.CARGO + cargoId, JSONObject.toJSONString(dto));
                 cargoInfoMapper.updateInventory(cargoId, 1);
                 log.info("更新数据库,加入待支付订单");
             }
