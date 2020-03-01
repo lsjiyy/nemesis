@@ -4,7 +4,7 @@
     redis 使用了哨兵
     gateway+jwt 做了全局鉴权
     eureka-server 注册中心(目前不是集群)
-    kafka+springcloud-stream 消息中间件 (正在加入)
+    kafka 消息中间件 (正在加入)
     数据连接池使用了druid
     mysql数据库
     springboot的email+freemaker 发送邮箱
