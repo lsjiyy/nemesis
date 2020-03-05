@@ -1,6 +1,7 @@
 package com.lsjyy.nemesis.system.config;
 
 import com.alibaba.fastjson.JSONObject;
+import com.lsjyy.nemesis.common.domain.InterfaceType;
 import com.lsjyy.nemesis.common.redis.RedisKey;
 import com.lsjyy.nemesis.common.redis.RedisUtil;
 import com.lsjyy.nemesis.common.role.InterfacePath;
@@ -33,32 +34,37 @@ import java.util.concurrent.TimeUnit;
 @Component
 @EnableScheduling
 public class InitializeData implements ApplicationListener<ContextRefreshedEvent> {
-    private static final Logger log= LoggerFactory.getLogger(InitializeData.class);
+    private static final Logger log = LoggerFactory.getLogger(InitializeData.class);
 
     @Autowired
     private RedisUtil redisUtil;
 
     @Autowired
     private InterfaceInfoMapper interfaceMapper;
+
     /**
      * 每两小时加载一次数据到缓存内
      * 将数据加载到缓存中,使用redis
      */
     //@Scheduled(cron = "0 0 */2 * * ?")
-    @Scheduled(cron = "20 * * * * ?")
+    @Scheduled(fixedRate = 50000)
     public void loadDataCache() {
+        //服务端接口
+        redisUtil.deleteKey(RedisKey.SYS_INTERFACE);
         List<InterfacePath> pathList = interfaceMapper.selectTokenPath();
-        String pathListString=JSONObject.toJSONString(pathList);
-        redisUtil.setValue(RedisKey.INTERFACE, pathListString);
+        pathList.forEach(value -> {
+            redisUtil.pushList(RedisKey.SYS_INTERFACE, JSONObject.toJSONString(value));
+        });
+
     }
 
 
     @Override
     @Order(1)
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        try{
+        try {
             loadDataCache();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

@@ -18,6 +18,9 @@ spring:
         - 118.89.238.168:23824
         - 47.104.60.115:23824
         - 49.234.205.96:23824
+  kafka:
+    #kafka集群
+    bootstrap-servers: 118.89.238.168:9092,49.234.205.96:9092,47.104.60.115:9092
   cloud:
     gateway:
       discovery:
@@ -32,9 +35,9 @@ spring:
           filters:
             - name: RequestRateLimiter
               args:
-                 key-resolver: '#{@uriKeyResolver}'
-                 redis-rate-limiter.replenishRate: 2500
-                 redis-rate-limiter.burstCapacity: 5000
+                 key-resolver: '#{@uriKeyResolver}' #根据url限流
+                 redis-rate-limiter.replenishRate: 2500 #允许用户每秒处理多少个请求
+                 redis-rate-limiter.burstCapacity: 5000 #令牌桶的容量，允许在一秒钟内完成的最大请求数
             - StripPrefix=1
         - id: nemesis-employee #人员
           uri: lb://NEMESIS-EMPLOYEE
@@ -74,6 +77,7 @@ spring:
             name: fallbackcmd
             fallbackUri: forward:/fallback
 hystrix.command.fallbackcmd.execution.isolation.thread.timeoutInMilliseconds: 10000 # 10s 服务连不上触发回滚
+
 
 #eureka
 eureka:

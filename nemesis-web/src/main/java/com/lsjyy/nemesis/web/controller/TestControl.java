@@ -1,9 +1,12 @@
 package com.lsjyy.nemesis.web.controller;
 
-import com.lsjyy.nemesis.common.aop.Logging;
+import com.lsjyy.nemesis.common.aop.log.Logging;
 import com.lsjyy.nemesis.common.domain.AjaxResult;
+import com.lsjyy.nemesis.common.kafka.KafkaMsgProducer;
+import com.lsjyy.nemesis.common.redis.RedisKey;
 import com.lsjyy.nemesis.common.redis.RedisUtil;
-import com.lsjyy.nemesis.web.kafka.KafkaMsgProducer;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Authoer LsjYy
@@ -24,6 +29,9 @@ public class TestControl {
     private static final Logger log = LoggerFactory.getLogger(TestControl.class);
 
     @Autowired
+    private RedissonClient redissonClient;
+
+    @Autowired
     private KafkaMsgProducer msgProducer;
 
     @Resource
@@ -33,27 +41,40 @@ public class TestControl {
     @GetMapping
     public AjaxResult test(String message) throws Exception {
         msgProducer.sendMessage(message);
-
         return AjaxResult.success();
     }
 
 
     @GetMapping("/t")
-    public AjaxResult testt() throws Exception {
-        log.info("被调用了");
-        //msgProducer.SendMsg("请接收消息");
-        //测试 要抢购的货品
-        // Object obj = redisUtil.getValue(RedisKey.CARGO+"c2");
-        //log.info("obj ===>{}",obj);
-        // if (obj != null) {
-        //msgProducer.sendSecKillMsg("c2");
-        //}else{
-        // }
-
-        //redisUtil.setValue("test","testvalue");
-        redisUtil.getValue("test1");
+    public AjaxResult testCargo(String cargoId) throws Exception {
 
 
-        return AjaxResult.success(redisUtil.getValue("test1"));
+        RLock lock = redissonClient.getLock("sk" + cargoId);
+        try {
+            //TODO:第一个参数30s=表示尝试获取分布式锁，并且最大的等待获取锁的时间为30s
+            //TODO:第二个参数10s=表示上锁之后，10s内操作完毕将自动释放锁
+            Boolean cache = lock.tryLock(30, 15, TimeUnit.SECONDS);
+            if (cache) {
+                Object object = redisUtil.getStringValue(RedisKey.RUSH + cargoId);
+
+                if (Objects.isNull(object)) {
+                    return AjaxResult.warn("商品已抢购完毕");
+                }
+                long count = Long.valueOf(object.toString());
+                if (count > 0) {
+                    count = redisUtil.increment(RedisKey.RUSH + cargoId, -1);
+                    //msgProducer.sendMessage(cargoId);
+                    if (count <= 0) {
+                        //redisUtil.deleteKey(RedisKey.CARGO + cargoId);
+                        return AjaxResult.success("已经没货了");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
+        return AjaxResult.success("有货");
     }
 }

@@ -1,6 +1,7 @@
 package com.lsjyy.nemesis.email.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.lsjyy.nemesis.common.domain.mail.MailContentType;
 import com.lsjyy.nemesis.common.domain.mail.SendMailVO;
 import com.lsjyy.nemesis.common.domain.template.TemplateType;
@@ -16,6 +17,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
@@ -85,13 +87,17 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public void receiveContent(String content) {
+    @LcnTransaction
+    @Transactional(rollbackFor = Exception.class)
+    public void receiveContent(String content) throws Exception{
+
         SendMailVO vo = JSONObject.parseObject(content, SendMailVO.class);
         if (vo.getMailContentType() == MailContentType.TEXT) {
             sendTextMail(vo);
         } else {
             sendHtmlMail(vo);
         }
+        throw new Exception();
     }
 
     public void recordEmail(SendMailVO vo, boolean flag) {

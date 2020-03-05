@@ -10,8 +10,4 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class MouseFeignImpl implements MouseFeign {
-    @Override
-    public AjaxResult callServer() {
-        return AjaxResult.error("mouse服务故障");
-    }
 }

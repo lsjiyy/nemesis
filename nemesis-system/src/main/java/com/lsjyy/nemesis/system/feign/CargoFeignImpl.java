@@ -11,8 +11,4 @@ import org.springframework.stereotype.Component;
 @Component
 public class CargoFeignImpl implements CargoFeign {
 
-    @Override
-    public AjaxResult callServer() {
-        return AjaxResult.error("服务故障");
-    }
 }

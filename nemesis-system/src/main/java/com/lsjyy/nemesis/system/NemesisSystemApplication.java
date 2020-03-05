@@ -32,18 +32,13 @@ public class NemesisSystemApplication {
         SpringApplication.run(NemesisSystemApplication.class, args);
     }
 
-    private static final Logger log= LoggerFactory.getLogger(NemesisSystemApplication.class);
+    private static final Logger log = LoggerFactory.getLogger(NemesisSystemApplication.class);
 
     @Autowired
     private RedisUtil redisUtil;
 
     @GetMapping("/test")
     public AjaxResult test() {
-        String obj = redisUtil.getValue("service").toString();
-        List<ServiceInfo> infos = JSONArray.parseArray(obj, ServiceInfo.class);
-        infos.forEach(info ->{
-            log.info("info ===>{}",info.getPort());
-        });
-        return AjaxResult.success("成功了",infos);
+        return AjaxResult.success("成功了");
     }
 }

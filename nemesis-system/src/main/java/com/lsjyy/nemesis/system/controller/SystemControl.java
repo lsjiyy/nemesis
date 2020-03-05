@@ -68,15 +68,9 @@ public class SystemControl {
         }
     }
 
-    @GetMapping("/server")
-    public AjaxResult getServerStatus() {
-        try {
-            List<ServerStatusDTO> dtoList = systemService.getServerStatus();
-            return AjaxResult.success(dtoList);
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error("###Exception ===>{}", e);
-            return AjaxResult.error();
-        }
+
+    @GetMapping("/role/usr")
+    public AjaxResult getUsrRole(){
+        return AjaxResult.success(systemService.getUsrRole());
     }
 }

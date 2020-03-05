@@ -56,6 +56,18 @@ spring:
   kafka:
     #kafka集群
     bootstrap-servers: 118.89.238.168:9092,49.234.205.96:9092,47.104.60.115:9092
+    producer:
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer #序列化
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer #序列化
+      # acks=0 ： 生产者在成功写入消息之前不会等待任何来自服务器的响应。
+      # acks=1 ： 只要集群的首领节点收到消息，生产者就会收到一个来自服务器成功响应。
+      # acks=all ：只有当所有参与复制的节点全部收到消息时，生产者才会收到一个来自服务器的成功响应。
+      acks: all
+      retries: 3 #消息发送失败重试次数
+      #kafka可使用内存大小
+      buffer-memory: 33554432 #kafka客户端发送服务器数据,不是来一条发一条,是经过缓冲的,多条消息成为一个batch
+      #一个批次可使用内存大小
+      batch-size: 16384 #默认大小16kb 每个Batch要存放batch.size大小的数据后才能发送出去
     consumer:
       #自动提交的时间间隔 消费者偏移自动提交给Kafka的频率（以毫秒为单位），默认值为5000毫秒。
       auto-commit-interval: 1s

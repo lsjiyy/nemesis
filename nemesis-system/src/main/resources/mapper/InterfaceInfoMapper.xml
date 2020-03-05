@@ -3,6 +3,8 @@
 <mapper namespace="com.lsjyy.nemesis.system.dao.InterfaceInfoMapper">
 
     <select id="selectTokenPath" resultType="com.lsjyy.nemesis.common.role.InterfacePath">
-        SELECT i.interface_id, i.path, s.service_name, i.method, s.port FROM interface_info i LEFT JOIN service_info s on i.service_id = s.service_id WHERE i.token_falg =1
+        SELECT i.interface_id, i.path, s.service_name, i.method, s.port FROM interface_info i LEFT JOIN service_info s on i.service_id = s.service_id WHERE token_falg = 1
     </select>
+
+
 </mapper>

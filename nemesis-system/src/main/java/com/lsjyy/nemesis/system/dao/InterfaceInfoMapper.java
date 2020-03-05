@@ -1,6 +1,7 @@
 package com.lsjyy.nemesis.system.dao;
 
 import com.lsjyy.nemesis.common.role.InterfacePath;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -15,4 +16,5 @@ public interface InterfaceInfoMapper {
      * @return
      */
     List<InterfacePath> selectTokenPath();
+
 }

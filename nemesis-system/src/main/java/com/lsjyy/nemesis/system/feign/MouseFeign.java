@@ -21,6 +21,4 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(value = "nemesis-mouse", fallback = MouseFeignImpl.class)
 public interface MouseFeign {
 
-    @RequestMapping(value = "/call", method = RequestMethod.GET)
-    AjaxResult callServer();
 }

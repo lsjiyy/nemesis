@@ -17,6 +17,7 @@ public class InterfaceInfo {
     private String serviceId;
     private String remark;
     private Integer tokenFlag;
+    private Integer interfaceType;
     private Timestamp updateTime;
     private Timestamp createTime;
 }

@@ -1,15 +1,16 @@
 server:
   port: 8088
 
-
 spring:
   application:
     name: nemesis-email
   datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://118.89.238.168/nemesis?useSSL=false&characterEncoding=utf-8
-    password: 2927213lsj
-    username: lsjyy
+    druid:
+      url: jdbc:mysql://118.89.238.168/nemesis?useSSL=false&characterEncoding=utf-8
+      username: lsjyy
+      password: 2927213lsj
   mail:
     host: smtp.163.com
     username: 17600716687@163.com

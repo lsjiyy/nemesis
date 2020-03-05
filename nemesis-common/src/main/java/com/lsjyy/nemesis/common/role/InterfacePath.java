@@ -13,7 +13,4 @@ public class InterfacePath {
     private String serviceName;
     private String path;
     private String method;
-    private Integer port;
-
-
 }

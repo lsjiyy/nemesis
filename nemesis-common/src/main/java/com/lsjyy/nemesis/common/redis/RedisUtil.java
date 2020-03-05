@@ -74,7 +74,7 @@ public class RedisUtil {
      * @param key
      * @param value
      */
-    public void putString(String key, String value) {
+    public void putString(String key, Object value) {
         redisTemplate.opsForValue().set(key, value);
     }
 
@@ -282,7 +282,7 @@ public class RedisUtil {
      * @param map 键
      * @return
      */
-    public void addHash(String key, Map<String, String> map) {
+    public void addHash(String key, Map<String, Object> map) {
         redisTemplate.opsForHash().putAll(key, map);
     }
 
@@ -326,7 +326,7 @@ public class RedisUtil {
      * @param hashKeys
      * @return 删除成功的 数量
      */
-    public Long deleteHashKey(String key, String... hashKeys) {
+    public Long deleteHashKey(String key, Object... hashKeys) {
         return redisTemplate.opsForHash().delete(key, hashKeys);
     }
 
@@ -369,7 +369,7 @@ public class RedisUtil {
      * @param key
      * @param value
      */
-    public void pushList(String key, String value) {
+    public void pushList(String key, Object value) {
         redisTemplate.opsForList().leftPush(key, value);
     }
 
@@ -428,7 +428,7 @@ public class RedisUtil {
      * @param values
      * @return
      */
-    public void leftPushAll(String key, String... values) {
+    public void leftPushAll(String key, Object... values) {
         redisTemplate.opsForList().leftPushAll(key, values);
     }
 
@@ -519,7 +519,7 @@ public class RedisUtil {
      * @param value
      * @param score 用来排序
      */
-    public void zSetAdd(String key, String value, double score) {
+    public void zSetAdd(String key, Object value, double score) {
         redisTemplate.opsForZSet().add(key, value, score);
     }
 
@@ -567,5 +567,9 @@ public class RedisUtil {
      */
     public Long zSetRank(String key, Object object) {
         return redisTemplate.opsForZSet().rank(key, object);
+    }
+
+    public Set<Object> getZSet(String key, Long start, Long end) {
+        return redisTemplate.opsForZSet().range(key, start, end);
     }
 }

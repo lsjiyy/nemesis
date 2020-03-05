@@ -6,12 +6,17 @@
         cargo_id, cargo_name, status, cover_url, deal_flag, unit, unit_price, direction, inventory
     </sql>
 
+    <insert id="insert" parameterType="com.lsjyy.nemesis.cargo.pojo.CargoInfo">
+        INSERT INTO cargo_info (cargo_id, cargo_name, status, cover_url, deal_flag, unit, unit_price, direction, inventory, update_time, create_time, `explain`)
+        VALUES (#{cargoId}, #{cargoName}, #{status}, #{coverUrl}, #{dealFlag}, #{unit}, #{unitPrice}, #{direction}, #{inventory}, sysdate(), sysdate(), #{explain})
+    </insert>
+
     <update id="updateInventory">
         UPDATE cargo_info SET inventory = inventory - #{inventory} WHERE cargo_id = #{cargoId}
     </update>
 
     <select id="selectNormalSample" resultType="com.lsjyy.nemesis.cargo.pojo.dto.CargoSampleDTO">
-        SELECT <include refid="baseColumn"/> FROM cargo_info WHERE status = 0 AND deal_flag =0 ORDER BY create_time DESC
+        SELECT <include refid="baseColumn"/> FROM cargo_info WHERE status = 0 AND deal_flag =0 AND inventory > 0 ORDER BY create_time DESC
     </select>
 
     <select id="selectByCargoId" resultType="com.lsjyy.nemesis.cargo.pojo.CargoInfo">

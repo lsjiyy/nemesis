@@ -14,8 +14,9 @@
         <module name="nemesis-employee" />
         <module name="nemesis-gateway" />
         <module name="nemesis-mouse" />
-        <module name="nemesis-parasite" />
+        <module name="nemesis-order" />
         <module name="nemesis-system" />
+        <module name="nemesis-tm" />
         <module name="nemesis-web" />
       </profile>
     </annotationProcessing>
@@ -30,8 +31,10 @@
       <module name="nemesis-gateway" target="1.8" />
       <module name="nemesis-kafkamq" target="1.8" />
       <module name="nemesis-mouse" target="1.8" />
+      <module name="nemesis-order" target="1.8" />
       <module name="nemesis-parasite" target="1.8" />
       <module name="nemesis-system" target="1.8" />
+      <module name="nemesis-tm" target="1.8" />
       <module name="nemesis-web" target="1.8" />
     </bytecodeTargetLevel>
   </component>

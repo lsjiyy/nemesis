@@ -1,5 +1,7 @@
 package com.lsjyy.nemesis.cargo.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.lsjyy.nemesis.cargo.pojo.CollectCargo;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -8,6 +10,6 @@ import org.apache.ibatis.annotations.Param;
  * @Description:
  */
 
-public interface CollectCargoMapper {
+public interface CollectCargoMapper extends BaseMapper<CollectCargo>{
     boolean exist(@Param("cargoId") String cargoId, @Param("mouseId") String mouseId);
 }

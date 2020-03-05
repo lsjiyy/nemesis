@@ -4,12 +4,13 @@ import com.lsjyy.nemesis.cargo.exception.CargoException;
 import com.lsjyy.nemesis.cargo.pojo.dto.CargoSampleDTO;
 import com.lsjyy.nemesis.cargo.pojo.dto.ClientCargoDTO;
 import com.lsjyy.nemesis.cargo.pojo.vo.ClientCargoVO;
+import com.lsjyy.nemesis.cargo.pojo.vo.CreateCargoVO;
 import com.lsjyy.nemesis.cargo.service.CargoService;
+import com.lsjyy.nemesis.common.aop.log.Logging;
 import com.lsjyy.nemesis.common.domain.AjaxResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -64,8 +65,20 @@ public class CargoControl {
         }
     }
 
-    @GetMapping("/call")
-    public AjaxResult cargoAnswer() {
-        return AjaxResult.success();
+    @Logging(module = "cargo", operateExplain = "新增商品")
+    @PostMapping("/create")
+    public AjaxResult addCargo(CreateCargoVO vo) {
+        try {
+            cargoService.createCargo(vo);
+            return AjaxResult.success();
+        } catch (CargoException e) {
+            return AjaxResult.warn(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("###Exception ===>{}", e);
+            return AjaxResult.error();
+        }
+
     }
+
 }

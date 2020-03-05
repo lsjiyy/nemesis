@@ -15,7 +15,7 @@ public interface MailService {
 
     void sendTextMail(SendMailVO vo);
 
-    void receiveContent(String content) ;
+    void receiveContent(String content) throws Exception;
 
 
 }

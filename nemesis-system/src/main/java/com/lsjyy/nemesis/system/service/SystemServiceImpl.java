@@ -9,14 +9,14 @@ import com.lsjyy.nemesis.common.utils.EncryptUtil;
 import com.lsjyy.nemesis.common.utils.PrimaryKeyUtil;
 import com.lsjyy.nemesis.system.config.InitializeData;
 import com.lsjyy.nemesis.system.dao.OperateHistoryMapper;
+import com.lsjyy.nemesis.system.dao.SysRoleMapper;
 import com.lsjyy.nemesis.system.dao.SysUserMapper;
 import com.lsjyy.nemesis.system.dao.SysUserRoleMapper;
 import com.lsjyy.nemesis.system.exception.SystemException;
 import com.lsjyy.nemesis.system.feign.MouseFeign;
-import com.lsjyy.nemesis.system.mq.MsgReceiver;
+//import com.lsjyy.nemesis.system.mq.MsgReceiver;
 import com.lsjyy.nemesis.system.pojo.OperateHistory;
 import com.lsjyy.nemesis.system.pojo.SysUser;
-import com.lsjyy.nemesis.system.pojo.SysUserRole;
 import com.lsjyy.nemesis.system.pojo.dto.ServerStatusDTO;
 import com.lsjyy.nemesis.system.pojo.dto.SysUserDTO;
 import com.lsjyy.nemesis.system.pojo.dto.UserRoleInterfaceDTO;
@@ -27,10 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -47,6 +44,8 @@ public class SystemServiceImpl implements SystemService {
     @Autowired
     private SysUserRoleMapper userRoleMapper;
     @Autowired
+    private SysRoleMapper sysRoleMapper;
+    @Autowired
     private InitializeData initializeData;
     @Autowired
     private OperateHistoryMapper operateHistoryMapper;
@@ -61,6 +60,10 @@ public class SystemServiceImpl implements SystemService {
             throw new SystemException("内容为空");
         }
         SysUser sysUser = userMapper.selectByLoginName(vo.getLoginName());
+        if(Objects.isNull(sysUser)){
+            throw new SystemException("账号不存在");
+        }
+
         if (sysUser.getStatus() != 0) {
             throw new SystemException("该账号被停用");
         }
@@ -103,15 +106,10 @@ public class SystemServiceImpl implements SystemService {
         operateHistoryMapper.insert(history);
     }
 
+
     @Override
-    public List<ServerStatusDTO> getServerStatus() {
-        List<ServerStatusDTO> dtos = new ArrayList<>();
-        ServerStatusDTO dto = new ServerStatusDTO();
-        dto.setServerName("mouse");
-        AjaxResult result = mouseFeign.callServer();
-        dto.setResult(result.get(AjaxResult.CODE_TAG).toString());
-        dtos.add(dto);
-        return dtos;
+    public List<String> getUsrRole() {
+        return sysRoleMapper.selectUsrRole();
     }
 
 

@@ -1,6 +1,8 @@
 package com.lsjyy.nemesis.mouse.service;
 
 
+import com.alibaba.fastjson.JSONObject;
+import com.lsjyy.nemesis.common.domain.AjaxResult;
 import com.lsjyy.nemesis.common.domain.StatusType;
 import com.lsjyy.nemesis.common.domain.mail.MailContentType;
 import com.lsjyy.nemesis.common.domain.mail.MailSubject;
@@ -9,6 +11,7 @@ import com.lsjyy.nemesis.common.domain.mail.SendMailVO;
 import com.lsjyy.nemesis.common.domain.template.TemplateType;
 import com.lsjyy.nemesis.common.jwt.JwtUtil;
 import com.lsjyy.nemesis.common.jwt.Token;
+import com.lsjyy.nemesis.common.kafka.KafkaMsgProducer;
 import com.lsjyy.nemesis.common.redis.RedisKey;
 import com.lsjyy.nemesis.common.redis.RedisUtil;
 import com.lsjyy.nemesis.common.utils.EncryptUtil;
@@ -16,6 +19,7 @@ import com.lsjyy.nemesis.common.utils.PrimaryKeyUtil;
 import com.lsjyy.nemesis.common.utils.RandomUtil;
 import com.lsjyy.nemesis.mouse.dao.MouseInfoMapper;
 import com.lsjyy.nemesis.mouse.exception.MouseException;
+import com.lsjyy.nemesis.mouse.feign.SystemFeign;
 import com.lsjyy.nemesis.mouse.pojo.MouseInfo;
 import com.lsjyy.nemesis.mouse.pojo.dto.MouseInfoDto;
 import com.lsjyy.nemesis.mouse.pojo.vo.CheckRegisterVO;
@@ -29,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -42,10 +47,13 @@ public class MouseServiceImpl implements MouseService {
 
     @Autowired
     private MouseInfoMapper mouseMapper;
-    //@Autowired
-    //private MsgProducer msgProducer;
     @Autowired
     private RedisUtil redisUtil;
+    @Autowired
+    private KafkaMsgProducer msgProducer;
+    @Autowired
+    private SystemFeign systemFeign;
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -71,7 +79,7 @@ public class MouseServiceImpl implements MouseService {
         mouseInfo.setPassword(EncryptUtil.encrypt(vo.getPassword()));
         //发送邮件
         String code = RandomUtil.getUuid(6);
-        redisUtil.setDateString(RedisKey.EMAIL + vo.getEmail(), code, 1L, TimeUnit.DAYS);
+        redisUtil.putTimeString(RedisKey.EMAIL + vo.getEmail(), code, 15L, TimeUnit.MINUTES);
         SendMailVO mailVO = new SendMailVO(vo.getEmail(), code, MailSubject.REGISTER_CODE, MailContentType.HTML, TemplateType.EMAIL, MailType.SYSTEM);
         //msgProducer.sendEmailMsg(JSONObject.toJSONString(mailVO));
         //保存数据
@@ -86,8 +94,8 @@ public class MouseServiceImpl implements MouseService {
             throw new MouseException("该邮箱未被使用");
         }
         //提取
-        Object codeObj = redisUtil.getValue(RedisKey.EMAIL + vo.getEmail());
-        if (codeObj == null) {
+        Object codeObj = redisUtil.getStringValue(RedisKey.EMAIL + vo.getEmail());
+        if (Objects.isNull(codeObj)) {
             throw new MouseException("验证码已过期");
         }
         if (!vo.getCode().equals(codeObj.toString())) {
@@ -98,7 +106,6 @@ public class MouseServiceImpl implements MouseService {
         //返回信息,登录
         MouseInfoDto dto = new MouseInfoDto(mouseInfo);
         Map<String, Object> map = new HashMap<>();
-        map.put("USER", mouseInfo.getMouseId());
         Token token = JwtUtil.generateToken(map);
         dto.setToken(token);
         return dto;
@@ -120,7 +127,9 @@ public class MouseServiceImpl implements MouseService {
         //返回信息,登录
         MouseInfoDto dto = new MouseInfoDto(mouseInfo);
         Map<String, Object> map = new HashMap<>();
-        map.put("USER", mouseInfo.getMouseId());
+        AjaxResult ajaxResult = systemFeign.getUsrRole();
+        map.put("ROLES", ajaxResult.get(AjaxResult.DATA_TAG));
+        log.info("data ==>{}", ajaxResult.get(AjaxResult.DATA_TAG));
         Token token = JwtUtil.generateToken(map);
         dto.setToken(token);
         return dto;
@@ -134,9 +143,8 @@ public class MouseServiceImpl implements MouseService {
         }
         //发送邮件
         String code = RandomUtil.getUuid(6);
-        redisUtil.setDateString(RedisKey.EMAIL + mouseInfo.getEmail(), code, 1L, TimeUnit.DAYS);
-        SendMailVO mailVO = new SendMailVO(mouseInfo.getEmail(), code, MailSubject.REGISTER_CODE, MailContentType.HTML, TemplateType.EMAIL,MailType.SYSTEM);
-        //msgProducer.sendEmailMsg(JSONObject.toJSONString(mailVO));
-
+        redisUtil.putTimeString(RedisKey.EMAIL + mouseInfo.getEmail(), code, 15L, TimeUnit.MINUTES);
+        SendMailVO mailVO = new SendMailVO(mouseInfo.getEmail(), code, MailSubject.REGISTER_CODE, MailContentType.HTML, TemplateType.EMAIL, MailType.SYSTEM);
+        msgProducer.sendEmailMessage(JSONObject.toJSONString(mailVO));
     }
 }

@@ -18,6 +18,5 @@ public interface SystemService {
 
     void recordLog(String content);
 
-    List<ServerStatusDTO> getServerStatus();
-
+    List<String> getUsrRole();
 }

@@ -19,6 +19,7 @@ public class CargoInfo {
     private String unit;
     private Integer unitPrice;
     private String direction;
+    private String explain;
     private Integer inventory;
     private Timestamp updateTime;
     private Timestamp createTime;

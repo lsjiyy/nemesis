@@ -2,15 +2,20 @@ package com.lsjyy.nemesis.cargo.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.lsjyy.nemesis.cargo.dao.CargoInfoMapper;
+import com.lsjyy.nemesis.cargo.dao.CargoSlideMapper;
 import com.lsjyy.nemesis.cargo.dao.CollectCargoMapper;
 import com.lsjyy.nemesis.cargo.exception.CargoException;
 import com.lsjyy.nemesis.cargo.pojo.CargoInfo;
+import com.lsjyy.nemesis.cargo.pojo.CargoSlide;
 import com.lsjyy.nemesis.cargo.pojo.dto.CargoSampleDTO;
 import com.lsjyy.nemesis.cargo.pojo.dto.ClientCargoDTO;
 import com.lsjyy.nemesis.cargo.pojo.vo.ClientCargoVO;
+import com.lsjyy.nemesis.cargo.pojo.vo.CreateCargoVO;
 import com.lsjyy.nemesis.common.domain.StatusType;
+import com.lsjyy.nemesis.common.kafka.KafkaMsgProducer;
 import com.lsjyy.nemesis.common.redis.RedisKey;
 import com.lsjyy.nemesis.common.redis.RedisUtil;
+import com.lsjyy.nemesis.common.utils.PrimaryKeyUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +25,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * @Authoer LsjYy
@@ -40,69 +44,31 @@ public class CargoServiceImpl implements CargoService {
     private CargoInfoMapper cargoInfoMapper;
     @Autowired
     private CollectCargoMapper collectMapper;
+    @Autowired
+    private CargoSlideMapper slideMapper;
+    @Autowired
+    private KafkaMsgProducer msgProducer;
 
-    //每10秒
-    @Scheduled(fixedRate = 360000)
+    //缓存库存
+    @Scheduled(fixedRate = 90000)
     @Override
-    public void cacheCargoList() {
-        log.info("运行");
+    public void cacheCargoInventory() {
+        log.info("缓存库存");
         List<CargoSampleDTO> dtoList = cargoInfoMapper.selectNormalSample();
         dtoList.forEach(dto -> {
-            redisUtil.putString(RedisKey.CARGO + dto.getCargoId(), JSONObject.toJSONString(dto));
+            redisUtil.putString(RedisKey.RUSH + dto.getCargoId(), dto.getInventory());
         });
     }
 
     @Override
     public List<CargoSampleDTO> getCargoList() {
-        List<CargoSampleDTO> dtoList = new ArrayList<>();
-        List<String> cargoSet = redisUtil.getScanKeys(RedisKey.CARGO + "*");
-        List<Object> cargoObjList = redisUtil.multiStringGet(cargoSet);
-        cargoObjList.forEach(cargoObj -> {
-            CargoSampleDTO dto = JSONObject.parseObject(cargoObj.toString(), CargoSampleDTO.class);
-            dtoList.add(dto);
-        });
-        return dtoList;
+        return null;
     }
 
-    /**
-     * 秒杀货物,初步测试 todo
-     *
-     * @param cargoId
-     */
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void rushCargo(String cargoId) {
-        Object objDto = redisUtil.getStringValue(RedisKey.CARGO + cargoId);
-        if (objDto == null) {
-            return;
-        }
-        CargoSampleDTO dto = JSONObject.parseObject(objDto.toString(), CargoSampleDTO.class);
-        if (dto != null) {
-            if (dto.getInventory() == 0) {
-                redisUtil.deleteKey(RedisKey.CARGO + cargoId);
-                return;
-            }
-            //库存为0
-            if (dto.getInventory() - 1 <= 0) {
-                //删除缓存中的列表
-                redisUtil.deleteKey(RedisKey.CARGO + cargoId);
-                cargoInfoMapper.updateInventory(cargoId, 1);
-                log.info("更新数据库,加入待支付订单");
-            } else {
-                //更新缓存内容
-                dto.setInventory(dto.getInventory() - 1);
-                redisUtil.putString(RedisKey.CARGO + cargoId, JSONObject.toJSONString(dto));
-                cargoInfoMapper.updateInventory(cargoId, 1);
-                log.info("更新数据库,加入待支付订单");
-            }
-        }
-
-
-    }
 
     @Override
     public ClientCargoDTO clientCargoInfo(ClientCargoVO vo) {
-        CargoInfo cargoInfo = cargoInfoMapper.selectByCargoId(vo.getCargoId());
+        CargoInfo cargoInfo = cargoInfoMapper.selectById(vo.getCargoId());
         if (cargoInfo == null || cargoInfo.getDealFlag() == StatusType.DELETE || cargoInfo.getStatus() != StatusType.NORMAL) {
             throw new CargoException("该货物不存在或已被下架");
         }
@@ -112,5 +78,47 @@ public class CargoServiceImpl implements CargoService {
             dto.setFavorite(favorite);
         }
         return dto;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void createCargo(CreateCargoVO vo) {
+        if (StringUtils.isEmpty(vo.getCargoName()) || StringUtils.isEmpty(vo.getUnit()) || Objects.isNull(vo.getUnitPrice())) {
+            throw new CargoException("请安照规定填写");
+        }
+        CargoInfo cargoInfo = new CargoInfo();
+        //库存
+        if (!Objects.isNull(vo.getInventory())) {
+            cargoInfo.setInventory(vo.getInventory());
+        }
+        //单价
+        cargoInfo.setUnitPrice(vo.getUnitPrice());
+        //名称
+        cargoInfo.setCargoName(vo.getCargoName());
+        //详情
+        cargoInfo.setDirection(vo.getDirection());
+        //简介
+        cargoInfo.setExplain(vo.getExplain());
+        //单位
+        cargoInfo.setUnit(vo.getUnit());
+        //封面
+        cargoInfo.setCoverUrl(vo.getCoverUrl());
+        //cargoId
+        cargoInfo.setCargoId(PrimaryKeyUtil.generateKey("CARGO_"));
+        //状态
+        cargoInfo.setStatus(StatusType.NORMAL);
+        cargoInfo.setDealFlag(StatusType.NOT_DELETE);
+        //保存
+        CargoSlide slide = new CargoSlide();
+        cargoInfoMapper.insert(cargoInfo);
+        if (!vo.getSlideList().isEmpty() && vo.getSlideList().size() > 0) {
+            vo.getSlideList().forEach(value -> {
+                slide.setCargoId(cargoInfo.getCargoId());
+                slide.setFileUrl(value);
+                slide.setCreateTime(new Timestamp(System.currentTimeMillis()));
+                slideMapper.insert(slide);
+            });
+        }
+
     }
 }

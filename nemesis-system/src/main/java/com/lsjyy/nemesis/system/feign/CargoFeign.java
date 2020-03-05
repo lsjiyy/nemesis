@@ -13,6 +13,4 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(value = "nemesis-cargo", fallback = CargoFeignImpl.class)
 public interface CargoFeign {
 
-    @RequestMapping(value = "/call", method = RequestMethod.GET)
-    AjaxResult callServer();
 }

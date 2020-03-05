@@ -6,7 +6,8 @@ package com.lsjyy.nemesis.common.redis;
  * @Description:
  */
 public class RedisKey {
-    public static final String CARGO = "CARGO_";
-    public static final String INTERFACE = "INTERFACE_";
+    public static final String RUSH_ORDER = "RUSH_ORDER_";
+    public static final String SYS_INTERFACE = "SYS_INTERFACE";
     public static final String EMAIL = "EMAIL_";
+    public static final String RUSH="RUSH_";
 }

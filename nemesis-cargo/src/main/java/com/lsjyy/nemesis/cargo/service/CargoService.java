@@ -3,6 +3,7 @@ package com.lsjyy.nemesis.cargo.service;
 import com.lsjyy.nemesis.cargo.pojo.dto.CargoSampleDTO;
 import com.lsjyy.nemesis.cargo.pojo.dto.ClientCargoDTO;
 import com.lsjyy.nemesis.cargo.pojo.vo.ClientCargoVO;
+import com.lsjyy.nemesis.cargo.pojo.vo.CreateCargoVO;
 
 import java.util.List;
 
@@ -13,13 +14,13 @@ import java.util.List;
  */
 public interface CargoService {
     /**
-     * 缓存商品列表
+     * 缓存预热
      */
-    void cacheCargoList();
+    void cacheCargoInventory();
 
     List<CargoSampleDTO> getCargoList();
 
-    void rushCargo(String cargoId);
-
     ClientCargoDTO clientCargoInfo(ClientCargoVO vo);
+
+    void createCargo(CreateCargoVO vo);
 }
