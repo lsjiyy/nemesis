@@ -1,12 +1,12 @@
 # nemesis
 访商城 个人开发
 框架 spring-cloud version Finchley.SR2 +redis +kafka +redisson分布式锁
-    gateway+jwt 做了全局鉴权
-    eureka-server 注册中心(目前不是集群)
-    数据连接池使用了druid
-    mysql数据库
-    springboot的email+freemaker 发送邮箱
-    使用了undertow WEB容器
+	gateway+jwt 做了全局鉴权
+	eureka-server 注册中心(目前不是集群)
+	数据连接池使用了druid
+	mysql数据库
+	springboot的email+freemaker 发送邮箱
+	使用了undertow WEB容器
 	分布式事务 txlcn (正在接入)
 	
 简单秒杀实现 
