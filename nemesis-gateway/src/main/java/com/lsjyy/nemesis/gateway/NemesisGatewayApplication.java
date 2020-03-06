@@ -2,12 +2,16 @@ package com.lsjyy.nemesis.gateway;
 
 
 import com.lsjyy.nemesis.common.domain.AjaxResult;
+import com.lsjyy.nemesis.common.kafka.KafkaConfig;
+import com.lsjyy.nemesis.common.kafka.KafkaMsgProducer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;

@@ -7,6 +7,7 @@
       <module fileurl="file://$PROJECT_DIR$/nemesis-cargo/nemesis-cargo.iml" filepath="$PROJECT_DIR$/nemesis-cargo/nemesis-cargo.iml" />
       <module fileurl="file://$PROJECT_DIR$/nemesis-center/nemesis-center.iml" filepath="$PROJECT_DIR$/nemesis-center/nemesis-center.iml" />
       <module fileurl="file://$PROJECT_DIR$/nemesis-common/nemesis-common.iml" filepath="$PROJECT_DIR$/nemesis-common/nemesis-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nemesis-config/nemesis-config.iml" filepath="$PROJECT_DIR$/nemesis-config/nemesis-config.iml" />
       <module fileurl="file://$PROJECT_DIR$/nemesis-email/nemesis-email.iml" filepath="$PROJECT_DIR$/nemesis-email/nemesis-email.iml" />
       <module fileurl="file://$PROJECT_DIR$/nemesis-employee/nemesis-employee.iml" filepath="$PROJECT_DIR$/nemesis-employee/nemesis-employee.iml" />
       <module fileurl="file://$PROJECT_DIR$/nemesis-gateway/nemesis-gateway.iml" filepath="$PROJECT_DIR$/nemesis-gateway/nemesis-gateway.iml" />

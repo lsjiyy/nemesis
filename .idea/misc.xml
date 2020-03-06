@@ -15,6 +15,7 @@
         <option value="$PROJECT_DIR$/nemesis-email/pom.xml" />
         <option value="$PROJECT_DIR$/nemesis-order/pom.xml" />
         <option value="$PROJECT_DIR$/nemesis-tm/pom.xml" />
+        <option value="$PROJECT_DIR$/nemesis-config/pom.xml" />
       </list>
     </option>
   </component>

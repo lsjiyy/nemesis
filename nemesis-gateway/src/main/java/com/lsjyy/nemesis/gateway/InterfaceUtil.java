@@ -8,6 +8,8 @@ import com.lsjyy.nemesis.common.role.InterfacePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import java.util.List;
  * @Description:
  */
 @Component
+@EnableScheduling
 public class InterfaceUtil {
     private static final Logger log = LoggerFactory.getLogger(InterfaceUtil.class);
 
@@ -35,5 +38,11 @@ public class InterfaceUtil {
             }
         }
         return null;
+    }
+
+    @Scheduled(fixedDelay = 60000L )
+    public void testRedis(){
+        redisUtil.getStringValue("123");
+        log.info("测试连接");
     }
 }

@@ -1,56 +1,14 @@
 server:
   port: 8181
 
+#order
 spring:
-  application:
-    name: nemesis-order
-  redis:
-    password: 2927213lsjyy
-    lettuce:
-      pool:
-        max-active: 1000 #连接池最大连接数（使用负值表示没有限制）
-        max-idle: 10 # 连接池中的最大空闲连接
-        min-idle: 5 # 连接池中的最小空闲连接
-        max-wait: -1ms  # 连接池最大阻塞等待时间（使用负值表示没有限制）
-    sentinel: #哨兵模式
-      master: mymaster
-      nodes:
-        - 118.89.238.168:23824
-        - 47.104.60.115:23824
-        - 49.234.205.96:23824
-  datasource:
-    type: com.alibaba.druid.pool.DruidDataSource
-    driver-class-name: com.mysql.jdbc.Driver
-    druid:
-      url: jdbc:mysql://118.89.238.168/nemesis?useSSL=false&characterEncoding=utf-8
-      username: lsjyy
-      password: 2927213lsj
-
   kafka:
-    #kafka集群
-    bootstrap-servers: 118.89.238.168:9092,49.234.205.96:9092,47.104.60.115:9092
     consumer:
-      #自动提交的时间间隔 消费者偏移自动提交给Kafka的频率（以毫秒为单位），默认值为5000毫秒。
-      auto-commit-interval: 1s
-      # 是否自动提交偏移量，默认值是true,为了避免出现重复数据和数据丢失，可以把它设置为false,然后手动提交偏移量
-      enable-auto-commit: true
-     # 键的反序列化方式
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      # 值的反序列化方式
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      # 该属性指定了消费者在读取一个没有偏移量的分区或者偏移量无效的情况下该作何处理：
-      # latest（默认值）在偏移量无效的情况下，消费者将从最新的记录开始读取数据（在消费者启动之后生成的记录）
-      # earliest ：在偏移量无效的情况下，消费者将从起始位置读取分区的记录
-      auto-offset-reset: earliest
       #消费组
       group-id: order-group
 
 
-#eureka
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8787/eureka/  #注册中心地址
 #开启断路器
 feign.hystrix.enabled: true
 

@@ -2,15 +2,6 @@ server:
   port: 8088
 
 spring:
-  application:
-    name: nemesis-email
-  datasource:
-    type: com.alibaba.druid.pool.DruidDataSource
-    driver-class-name: com.mysql.jdbc.Driver
-    druid:
-      url: jdbc:mysql://118.89.238.168/nemesis?useSSL=false&characterEncoding=utf-8
-      username: lsjyy
-      password: 2927213lsj
   mail:
     host: smtp.163.com
     username: 17600716687@163.com
@@ -32,24 +23,9 @@ spring:
     settings:
       default_encoding: utf-8
   kafka:
-    #kafka集群
-    bootstrap-servers: 118.89.238.168:9092,49.234.205.96:9092,47.104.60.115:9092
     consumer:
-      #自动提交的时间间隔 消费者偏移自动提交给Kafka的频率（以毫秒为单位），默认值为5000毫秒。
-      auto-commit-interval: 1s
-      # 是否自动提交偏移量，默认值是true,为了避免出现重复数据和数据丢失，可以把它设置为false,然后手动提交偏移量
-      enable-auto-commit: true
-     # 键的反序列化方式
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      # 值的反序列化方式
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      # 该属性指定了消费者在读取一个没有偏移量的分区或者偏移量无效的情况下该作何处理：
-      # latest（默认值）在偏移量无效的情况下，消费者将从最新的记录开始读取数据（在消费者启动之后生成的记录）
-      # earliest ：在偏移量无效的情况下，消费者将从起始位置读取分区的记录
-      auto-offset-reset: earliest
       #消费组
       group-id: email-group
-
 
 
 logging:
@@ -59,11 +35,6 @@ logging:
         com.lsjyy.nemesis.email: DEBUG
         com.baomidou.mybatisplus: INFO
 
-#eureka
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8787/eureka/  #注册中心地址
 #开启断路器
 feign.hystrix.enabled: true
 

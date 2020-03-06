@@ -1,7 +1,6 @@
 package com.lsjyy.nemesis.email.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.lsjyy.nemesis.common.domain.mail.MailContentType;
 import com.lsjyy.nemesis.common.domain.mail.SendMailVO;
 import com.lsjyy.nemesis.common.domain.template.TemplateType;
@@ -87,7 +86,6 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    @LcnTransaction
     @Transactional(rollbackFor = Exception.class)
     public void receiveContent(String content) throws Exception{
 
@@ -97,7 +95,6 @@ public class MailServiceImpl implements MailService {
         } else {
             sendHtmlMail(vo);
         }
-        throw new Exception();
     }
 
     public void recordEmail(SendMailVO vo, boolean flag) {

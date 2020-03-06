@@ -1,0 +1,24 @@
+
+spring:
+  application:
+    name: nemesis-mouse
+  cloud:
+    config:
+      label: master
+      profile: dev
+      discovery:
+        enabled: true
+        service-id: nemesis-config
+      name: redis,db,bus,kafka-server,kafka-producer
+      fail-fast: true
+
+#eureka
+eureka:
+  client:
+    serviceUrl:
+      #注册中心地址
+      defaultZone: http://localhost:8787/eureka/
+     #心跳检测默认30s
+    eureka-connection-idle-timeout-seconds:  5
+    #从eureka服务器获取注册表信息的频率（以秒为单位）。
+    registry-fetch-interval-seconds: 5

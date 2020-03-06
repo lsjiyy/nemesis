@@ -22,9 +22,12 @@
         <module>nemesis-common</module>
         <module>nemesis-system</module>
         <module>nemesis-center</module>
-        <module>nemesis-parasite</module>
         <module>nemesis-cargo</module>
         <module>nemesis-employee</module>
+        <module>nemesis-order</module>
+        <module>nemesis-email</module>
+        <module>nemesis-cargo</module>
+        <module>nemesis-gateway</module>
     </modules>
 
     <properties>

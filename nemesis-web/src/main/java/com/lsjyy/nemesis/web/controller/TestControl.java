@@ -10,6 +10,8 @@ import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,11 +39,14 @@ public class TestControl {
     @Resource
     private RedisUtil redisUtil;
 
-    @Logging(module = "web", operateExplain = "测试")
+
+    @Value("${spring.pay}")
+    private String pay;
+
     @GetMapping
-    public AjaxResult test(String message) throws Exception {
-        msgProducer.sendMessage(message);
-        return AjaxResult.success();
+    public AjaxResult test() throws Exception {
+        log.info("success");
+        return AjaxResult.success(pay);
     }
 
 
