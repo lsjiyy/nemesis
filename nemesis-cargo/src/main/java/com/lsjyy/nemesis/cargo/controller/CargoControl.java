@@ -78,7 +78,18 @@ public class CargoControl {
             log.error("###Exception ===>{}", e);
             return AjaxResult.error();
         }
+    }
 
+    @PostMapping("/reduce")
+    public AjaxResult reduceCargo(String cargoId) {
+        try {
+            log.info("cargoId ===>{}",cargoId);
+            //cargoService.reduceInventory(cargoId);
+            return AjaxResult.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return AjaxResult.error();
+        }
     }
 
 }

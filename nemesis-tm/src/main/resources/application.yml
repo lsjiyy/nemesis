@@ -57,7 +57,7 @@ tx-lcn:
     # 事务处理并发等级. 默认为机器逻辑核心数5倍
     concurrent-level: 160
     # TM后台登陆密码，默认值为codingapi
-    admin-key: codingapi
+    admin-key: lsj
     # 分布式事务锁超时时间 默认为-1，当-1时会用tx-lcn.manager.dtx-time的时间
     dtx-lock-time: ${tx-lcn.manager.dtx-time}
     # 雪花算法的sequence位长度，默认为12位.

@@ -17,7 +17,7 @@ eureka:
   client:
     serviceUrl:
       #注册中心地址
-      defaultZone: http://localhost:8787/eureka/
+      defaultZone: http://49.234.205.96:8787/eureka/
      #心跳检测默认30s
     eureka-connection-idle-timeout-seconds:  5
     #从eureka服务器获取注册表信息的频率（以秒为单位）。

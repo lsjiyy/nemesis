@@ -1,5 +1,5 @@
 server:
-  port: 8181
+  port: 8182
 
 #order
 spring:
@@ -7,6 +7,8 @@ spring:
     consumer:
       #消费组
       group-id: order-group
+      #不自动提交便宜量
+      enable-auto-commit: false
 
 
 #开启断路器
@@ -26,3 +28,11 @@ logging:
         org.springframework: INFO
         com.lsjyy.nemesis.order: DEBUG
         com.baomidou.mybatisplus: INFO
+
+#tx-lcn:
+#  client:
+#    manager-address: 127.0.0.1:8070
+#  ribbon:
+#    loadbalancer:
+#      dtx:
+#        enabled: true

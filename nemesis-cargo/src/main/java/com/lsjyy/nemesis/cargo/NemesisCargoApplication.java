@@ -1,5 +1,6 @@
 package com.lsjyy.nemesis.cargo;
 
+import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,6 +12,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableDiscoveryClient
 @EnableFeignClients
 @MapperScan("com.lsjyy.nemesis.cargo.dao")
+//@EnableDistributedTransaction //分布式事务注解
 public class NemesisCargoApplication {
 
     public static void main(String[] args) {

@@ -1,6 +1,9 @@
 package com.lsjyy.nemesis.cargo.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.codingapi.txlcn.tc.annotation.DTXPropagation;
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
+import com.codingapi.txlcn.tc.annotation.TxcTransaction;
 import com.lsjyy.nemesis.cargo.dao.CargoInfoMapper;
 import com.lsjyy.nemesis.cargo.dao.CargoSlideMapper;
 import com.lsjyy.nemesis.cargo.dao.CollectCargoMapper;
@@ -12,6 +15,7 @@ import com.lsjyy.nemesis.cargo.pojo.dto.ClientCargoDTO;
 import com.lsjyy.nemesis.cargo.pojo.vo.ClientCargoVO;
 import com.lsjyy.nemesis.cargo.pojo.vo.CreateCargoVO;
 import com.lsjyy.nemesis.common.domain.StatusType;
+import com.lsjyy.nemesis.common.kafka.KafkaMessage;
 import com.lsjyy.nemesis.common.kafka.KafkaMsgProducer;
 import com.lsjyy.nemesis.common.redis.RedisKey;
 import com.lsjyy.nemesis.common.redis.RedisUtil;
@@ -46,8 +50,6 @@ public class CargoServiceImpl implements CargoService {
     private CollectCargoMapper collectMapper;
     @Autowired
     private CargoSlideMapper slideMapper;
-    @Autowired
-    private KafkaMsgProducer msgProducer;
 
     //缓存库存
     @Scheduled(fixedRate = 90000)
@@ -120,5 +122,16 @@ public class CargoServiceImpl implements CargoService {
             });
         }
 
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void reduceInventory(KafkaMessage message) throws Exception {
+        cargoInfoMapper.updateInventory(message.getData(), -1);
+        if (!StringUtils.isEmpty(message.getData())) {
+            throw new Exception("ss");
+        }
+        //正常完成,删除此消息
+        redisUtil.deleteKey("kafka" + message.getMessageId());
     }
 }

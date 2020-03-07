@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SystemKafkaReceiver {
     private static final Logger log = LoggerFactory.getLogger(SystemKafkaReceiver.class);
-    private static final String SYSTEM_TOPIC = "system-topic";
+    private static final String SYSTEM_TOPIC = "SYSTEM_TOPIC";
 
     @Autowired
     private SystemService systemService;

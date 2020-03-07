@@ -1,5 +1,7 @@
 package com.lsjyy.nemesis.common.kafka;
 
+import com.lsjyy.nemesis.common.domain.kafka.KafkaTopic;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,13 +18,8 @@ import java.util.List;
  * @Description:
  */
 @Configuration
+@Slf4j
 public class KafkaConfig {
-    private static final Logger log = LoggerFactory.getLogger(KafkaConfig.class);
-    private static final String WEB_TOPIC = "web-topic";
-    private static final String MOUSE_TOPIC = "mouse-topic";
-    private static final String SYSTEM_TOPIC = "system-topic";
-
-
     /**
      * name  主题名称
      * numPartitions  分区数
@@ -33,9 +30,10 @@ public class KafkaConfig {
     @Bean
     public List<NewTopic> adviceTopic() {
         List<NewTopic> topicList = new ArrayList<>();
-        topicList.add(new NewTopic(WEB_TOPIC, 3, (short) 1));
-        topicList.add(new NewTopic(MOUSE_TOPIC, 3, (short) 1));
-        topicList.add(new NewTopic(SYSTEM_TOPIC, 3, (short) 1));
+        topicList.add(new NewTopic(KafkaTopic.WEB_TOPIC.name(), 3, (short) 1));
+        topicList.add(new NewTopic(KafkaTopic.MOUSE_TOPIC.name(), 3, (short) 1));
+        topicList.add(new NewTopic(KafkaTopic.SYSTEM_TOPIC.name(), 3, (short) 1));
+        topicList.add(new NewTopic(KafkaTopic.SYSTEM_TOPIC.name(), 3, (short) 1));
         return topicList;
     }
 }

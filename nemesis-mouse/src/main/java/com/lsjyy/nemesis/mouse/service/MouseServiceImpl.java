@@ -4,6 +4,7 @@ package com.lsjyy.nemesis.mouse.service;
 import com.alibaba.fastjson.JSONObject;
 import com.lsjyy.nemesis.common.domain.AjaxResult;
 import com.lsjyy.nemesis.common.domain.StatusType;
+import com.lsjyy.nemesis.common.domain.kafka.KafkaTopic;
 import com.lsjyy.nemesis.common.domain.mail.MailContentType;
 import com.lsjyy.nemesis.common.domain.mail.MailSubject;
 import com.lsjyy.nemesis.common.domain.mail.MailType;
@@ -145,6 +146,6 @@ public class MouseServiceImpl implements MouseService {
         String code = RandomUtil.getUuid(6);
         redisUtil.putTimeString(RedisKey.EMAIL + mouseInfo.getEmail(), code, 15L, TimeUnit.MINUTES);
         SendMailVO mailVO = new SendMailVO(mouseInfo.getEmail(), code, MailSubject.REGISTER_CODE, MailContentType.HTML, TemplateType.EMAIL, MailType.SYSTEM);
-        msgProducer.sendEmailMessage(JSONObject.toJSONString(mailVO));
+        msgProducer.sendMessage(KafkaTopic.MOUSE_TOPIC.name(), JSONObject.toJSONString(mailVO));
     }
 }

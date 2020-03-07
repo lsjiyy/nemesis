@@ -31,6 +31,7 @@
       <module name="nemesis-email" target="1.8" />
       <module name="nemesis-employee" target="1.8" />
       <module name="nemesis-gateway" target="1.8" />
+      <module name="nemesis-kafka" target="1.8" />
       <module name="nemesis-kafkamq" target="1.8" />
       <module name="nemesis-mouse" target="1.8" />
       <module name="nemesis-order" target="1.8" />

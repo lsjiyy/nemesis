@@ -4,6 +4,7 @@ import com.lsjyy.nemesis.cargo.pojo.dto.CargoSampleDTO;
 import com.lsjyy.nemesis.cargo.pojo.dto.ClientCargoDTO;
 import com.lsjyy.nemesis.cargo.pojo.vo.ClientCargoVO;
 import com.lsjyy.nemesis.cargo.pojo.vo.CreateCargoVO;
+import com.lsjyy.nemesis.common.kafka.KafkaMessage;
 
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface CargoService {
     ClientCargoDTO clientCargoInfo(ClientCargoVO vo);
 
     void createCargo(CreateCargoVO vo);
+
+    void reduceInventory(KafkaMessage message)throws Exception ;
 }

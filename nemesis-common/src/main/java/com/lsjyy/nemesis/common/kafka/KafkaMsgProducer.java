@@ -1,5 +1,8 @@
 package com.lsjyy.nemesis.common.kafka;
 
+import com.lsjyy.nemesis.common.domain.kafka.KafkaTopic;
+import com.lsjyy.nemesis.common.utils.SnowFlake;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -15,35 +18,17 @@ import javax.annotation.Resource;
  * @Description:
  */
 @Component
+@Slf4j
 public class KafkaMsgProducer {
-    private static final Logger log = LoggerFactory.getLogger(KafkaMsgProducer.class);
-    private static final String WEB_TOPIC = "web-topic";
-    private static final String MOUSE_TOPIC = "mouse-topic";
-    private static final String SYSTEM_TOPIC="system-topic";
 
     @Resource
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    public void sendMessage(String message) {
+    public void sendMessage(String topic, String message) {
         log.info("要发送的消息 ===>{}", message);
-        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(WEB_TOPIC, message);
+        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(topic, message);
         future.addCallback(success -> log.info("KafkaMessageProducer 发送消息成功！"),
-                fail -> this.sendMessage(message));
-    }
-
-
-    public void sendEmailMessage(String message) {
-        log.info("要发送的消息 ===>{}", message);
-        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(MOUSE_TOPIC, message);
-        future.addCallback(success -> log.info("KafkaMessageProducer 发送消息成功！"),
-                fail -> this.sendEmailMessage(message));
-    }
-
-    public void sendSystemMessage(String message) {
-        log.info("要发送的消息 ===>{}", message);
-        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(SYSTEM_TOPIC, message);
-        future.addCallback(success -> log.info("KafkaMessageProducer 发送消息成功！"),
-                fail -> this.sendEmailMessage(message));
+                fail -> this.sendMessage(topic, message));
     }
 
 }

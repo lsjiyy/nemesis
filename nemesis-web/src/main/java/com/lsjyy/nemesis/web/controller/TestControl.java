@@ -2,6 +2,7 @@ package com.lsjyy.nemesis.web.controller;
 
 import com.lsjyy.nemesis.common.aop.log.Logging;
 import com.lsjyy.nemesis.common.domain.AjaxResult;
+import com.lsjyy.nemesis.common.domain.kafka.KafkaTopic;
 import com.lsjyy.nemesis.common.kafka.KafkaMsgProducer;
 import com.lsjyy.nemesis.common.redis.RedisKey;
 import com.lsjyy.nemesis.common.redis.RedisUtil;
@@ -81,5 +82,9 @@ public class TestControl {
             lock.unlock();
         }
         return AjaxResult.success("有货");
+    }
+
+    public static void main(String[]args){
+        System.out.println(KafkaTopic.MOUSE_TOPIC.name());
     }
 }

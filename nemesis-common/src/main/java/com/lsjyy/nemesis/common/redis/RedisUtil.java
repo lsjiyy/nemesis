@@ -1,5 +1,6 @@
 package com.lsjyy.nemesis.common.redis;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.connection.RedisConnection;
@@ -24,14 +25,24 @@ import java.util.function.Consumer;
  * @Description: redis工具类
  */
 @Component
+@Slf4j
 public class RedisUtil {
-    private static final Logger logger = LoggerFactory.getLogger(RedisUtil.class);
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
 
     // ----------------  公共方法 ----------------
+
+    /**
+     * key是否存在
+     * @param key
+     * @return
+     */
+    public Boolean hasKey(String key){
+        return redisTemplate.hasKey(key);
+    }
+
 
     /**
      * 删除key值
@@ -315,8 +326,8 @@ public class RedisUtil {
      * @param key2 键
      * @return
      */
-    public Object getHashString(String key, String key2) {
-        return redisTemplate.opsForHash().get(key, key);
+    public Object getHashString(String key, Object key2) {
+        return redisTemplate.opsForHash().get(key, key2);
     }
 
     /**
@@ -478,9 +489,8 @@ public class RedisUtil {
 
     /**
      * scan 实现
-     *
-     * @param pattern  表达式
-     * @param consumer 对迭代到的key进行操作
+     * @param pattern	表达式
+     * @param consumer	对迭代到的key进行操作
      */
     public void scanKeys(String pattern, Consumer<byte[]> consumer) {
         redisTemplate.execute((RedisConnection connection) -> {
@@ -496,8 +506,7 @@ public class RedisUtil {
 
     /**
      * 获取符合条件的key
-     *
-     * @param pattern 表达式
+     * @param pattern	表达式
      * @return
      */
     public List<String> getScanKeys(String pattern) {

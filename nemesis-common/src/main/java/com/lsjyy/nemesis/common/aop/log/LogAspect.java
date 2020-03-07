@@ -1,6 +1,7 @@
 package com.lsjyy.nemesis.common.aop.log;
 
 import com.alibaba.fastjson.JSONObject;
+import com.lsjyy.nemesis.common.domain.kafka.KafkaTopic;
 import com.lsjyy.nemesis.common.domain.log.RecordLogVO;
 //import com.lsjyy.nemesis.common.mq.MsgProducer;
 import com.lsjyy.nemesis.common.kafka.KafkaMsgProducer;
@@ -90,7 +91,7 @@ public class LogAspect {
         //操作结果
         recordLogVO.setStatus(JSONObject.toJSONString(result));
         //记录
-        msgProducer.sendSystemMessage(JSONObject.toJSONString(recordLogVO));
+        msgProducer.sendMessage(KafkaTopic.SYSTEM_TOPIC.name(), JSONObject.toJSONString(recordLogVO));
     }
 
 

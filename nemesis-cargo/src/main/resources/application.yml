@@ -8,6 +8,8 @@ spring:
       group-id: cargo-group
 
 
+
+
 #mybatis 配置
 mybatis-plus:
   configuration:
@@ -26,3 +28,10 @@ logging:
         org.springframework: INFO
         com.lsjyy.nemesis.cargo: DEBUG
         com.baomidou.mybatisplus: INFO
+#tx-lcn:
+#  client:
+#    manager-address: 127.0.0.1:8070
+#  ribbon:
+#    loadbalancer:
+#      dtx:
+#        enabled: true

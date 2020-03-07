@@ -24,9 +24,4 @@ logging:
         org.springframework: INFO
         com.lsjyy.nemesis.system: DEBUG
         com.baomidou.mybatisplus: INFO
-#eureka
-eureka:
-  client:
-    service-url:
-       defaultZone: http://localhost:8787/eureka/
 

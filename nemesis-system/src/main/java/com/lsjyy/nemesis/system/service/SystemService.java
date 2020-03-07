@@ -19,4 +19,6 @@ public interface SystemService {
     void recordLog(String content);
 
     List<String> getUsrRole();
+
+    void retryKafkaMsg();
 }
