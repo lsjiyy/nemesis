@@ -43,8 +43,9 @@ public class TestControl {
 
 
     @GetMapping
-    public AjaxResult test(String loginName,String password) throws Exception {
-        log.info("loginName ===>{},password ===>{}",loginName,password);
+    public AjaxResult test(String loginName, String password) throws Exception {
+        log.info("loginName ===>{},password ===>{}", loginName, password);
+        log.info("测试");
         return AjaxResult.success();
     }
 
