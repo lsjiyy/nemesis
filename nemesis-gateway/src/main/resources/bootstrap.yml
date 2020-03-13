@@ -22,3 +22,8 @@ eureka:
     registry-fetch-interval-seconds: 5
      #心跳检测默认30s
     eureka-connection-idle-timeout-seconds:  5
+
+#刷新接口
+management:
+  server:
+    port: 8786

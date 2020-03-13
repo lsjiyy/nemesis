@@ -58,12 +58,14 @@ public class NemesisGlobalFilter implements GlobalFilter, Ordered {
         log.info("path===>{},method ===>{}",path,method);
         //缓存中是否有接口
         String interfaceId = interfaceUtil.checkInterface(path, method);
+        String auth = exchange.getRequest().getHeaders().getFirst("Authorization");
+        log.info("auth ===>{}",auth);
         //缓存中没有接口
         if (StringUtils.isEmpty(interfaceId)) {
             return chain.filter(exchange);
         } else {
             //请求tou
-            String auth = exchange.getRequest().getHeaders().getFirst("Authorization");
+            //String auth = exchange.getRequest().getHeaders().getFirst("Authorization");
             if (!StringUtils.isEmpty(auth) && auth.length() > 7) {
                 //截取token
                 String HeadStr = auth.substring(0, 6).toLowerCase();

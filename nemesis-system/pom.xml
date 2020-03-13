@@ -6,7 +6,6 @@
         <groupId>com.lsjyy</groupId>
         <artifactId>nemesis</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.lsjyy</groupId>

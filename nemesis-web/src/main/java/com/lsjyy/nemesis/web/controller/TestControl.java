@@ -1,11 +1,11 @@
 package com.lsjyy.nemesis.web.controller;
 
-import com.lsjyy.nemesis.common.aop.log.Logging;
 import com.lsjyy.nemesis.common.domain.AjaxResult;
 import com.lsjyy.nemesis.common.domain.kafka.KafkaTopic;
 import com.lsjyy.nemesis.common.kafka.KafkaMsgProducer;
 import com.lsjyy.nemesis.common.redis.RedisKey;
 import com.lsjyy.nemesis.common.redis.RedisUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,8 +29,8 @@ import java.util.concurrent.TimeUnit;
  */
 @RestController
 @RequestMapping("/test")
+@Slf4j
 public class TestControl {
-    private static final Logger log = LoggerFactory.getLogger(TestControl.class);
 
     @Autowired
     private RedissonClient redissonClient;
@@ -41,13 +42,10 @@ public class TestControl {
     private RedisUtil redisUtil;
 
 
-    @Value("${spring.pay}")
-    private String pay;
-
     @GetMapping
-    public AjaxResult test() throws Exception {
-        log.info("success");
-        return AjaxResult.success(pay);
+    public AjaxResult test(String loginName,String password) throws Exception {
+        log.info("loginName ===>{},password ===>{}",loginName,password);
+        return AjaxResult.success();
     }
 
 
@@ -84,7 +82,7 @@ public class TestControl {
         return AjaxResult.success("有货");
     }
 
-    public static void main(String[]args){
+    public static void main(String[] args) {
         System.out.println(KafkaTopic.MOUSE_TOPIC.name());
     }
 }

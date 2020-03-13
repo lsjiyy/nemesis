@@ -9,9 +9,9 @@ spring:
     config:
       server:
         git:
-          uri: https://gitee.com/lsj0713/nemesis-config.git
+          uri: https://github.com/lsjiyy/nemesis-config.git
           search-paths: resp
-          username: lsj0713
+          username: 1206988086@qq.com
           password: 2927213lsj
           default-label: master
 
@@ -25,3 +25,6 @@ eureka:
     eureka-connection-idle-timeout-seconds:  5
     #从eureka服务器获取注册表信息的频率（以秒为单位）。
     registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    ip-address: 49.234.205.96

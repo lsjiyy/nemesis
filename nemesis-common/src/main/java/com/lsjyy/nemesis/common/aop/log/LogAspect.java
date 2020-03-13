@@ -8,6 +8,7 @@ import com.lsjyy.nemesis.common.kafka.KafkaMsgProducer;
 import com.lsjyy.nemesis.common.utils.IPUtil;
 import com.lsjyy.nemesis.common.utils.ServletUtils;
 import com.lsjyy.nemesis.common.utils.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
@@ -31,9 +32,8 @@ import java.util.Map;
  */
 @Aspect
 @Component
+@Slf4j
 public class LogAspect {
-    private static final Logger log = LoggerFactory.getLogger(LogAspect.class);
-
 
     @Autowired
     private KafkaMsgProducer msgProducer;

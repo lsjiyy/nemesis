@@ -19,7 +19,7 @@ spring:
               args:
                  key-resolver: '#{@uriKeyResolver}' #根据url限流
                  redis-rate-limiter.replenishRate: 2500 #允许用户每秒处理多少个请求
-                 redis-rate-limiter.burstCapacity: 5000 #令牌桶的容量，允许在一秒钟内完成的最大请求数
+                 redis-rate-limiter.burstCapacity: 3000 #令牌桶的容量，允许在一秒钟内完成的最大请求数
             #去掉路径前缀
             - StripPrefix=1
         - id: nemesis-employee #人员
@@ -59,7 +59,15 @@ spring:
           args:
             name: fallbackcmd
             fallbackUri: forward:/fallback
-hystrix.command.fallbackcmd.execution.isolation.thread.timeoutInMilliseconds: 15000 # 10s 服务连不上触发回滚
+             # 10s 服务连不上触发回滚
+hystrix.command.fallbackcmd.execution.isolation.thread.timeoutInMilliseconds: 15000
+
+
+
+
+
+
+
 
 
 
