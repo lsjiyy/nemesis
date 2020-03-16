@@ -39,7 +39,7 @@ public class CargoKafkaMsgReceiver {
         KafkaMessage message = JSONObject.parseObject(record.value().toString(), KafkaMessage.class);
         log.info("收到的消息 ===>{}", message.getData());
         try {
-            cargoService.reduceInventory(message);
+           // cargoService.reduceInventory(message);
             //业务代码
         } catch (Exception e) {
             e.printStackTrace();

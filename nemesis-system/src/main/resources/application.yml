@@ -11,7 +11,7 @@ spring:
 
 
 #mybatis-plus基本配置
-mybatis-plus:
+mybatis:
   configuration:
     default-fetch-size: 100
     default-statement-timeout: 30

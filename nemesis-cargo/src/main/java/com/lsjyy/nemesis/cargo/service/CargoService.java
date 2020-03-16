@@ -1,10 +1,11 @@
 package com.lsjyy.nemesis.cargo.service;
 
-import com.lsjyy.nemesis.cargo.pojo.dto.CargoSampleDTO;
-import com.lsjyy.nemesis.cargo.pojo.dto.ClientCargoDTO;
-import com.lsjyy.nemesis.cargo.pojo.vo.ClientCargoVO;
+
+import com.lsjyy.nemesis.cargo.pojo.dto.BackCargoDTO;
+import com.lsjyy.nemesis.cargo.pojo.dto.GroupDTO;
 import com.lsjyy.nemesis.cargo.pojo.vo.CreateCargoVO;
-import com.lsjyy.nemesis.common.kafka.KafkaMessage;
+import com.lsjyy.nemesis.cargo.pojo.vo.CreateGroupVO;
+import com.lsjyy.nemesis.cargo.pojo.vo.RevampGroupVO;
 
 import java.util.List;
 
@@ -14,16 +15,13 @@ import java.util.List;
  * @Description:
  */
 public interface CargoService {
-    /**
-     * 缓存预热
-     */
-    void cacheCargoInventory();
+    void createGroup(CreateGroupVO vo);
 
-    List<CargoSampleDTO> getCargoList();
-
-    ClientCargoDTO clientCargoInfo(ClientCargoVO vo);
+    List<GroupDTO> getGroup();
 
     void createCargo(CreateCargoVO vo);
 
-    void reduceInventory(KafkaMessage message)throws Exception ;
+    List<BackCargoDTO> backCargo(String cargoName);
+
+    void revampGroup(RevampGroupVO vo);
 }

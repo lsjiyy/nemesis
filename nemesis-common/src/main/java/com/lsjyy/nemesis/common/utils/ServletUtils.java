@@ -25,4 +25,10 @@ public class ServletUtils {
         return getAttributes().getResponse();
     }
 
+    /**
+     * 获取String参数
+     */
+    public static String getParameter(String name) {
+        return getRequest().getParameter(name);
+    }
 }

@@ -7,39 +7,29 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="nemesis-activity" />
         <module name="nemesis-cargo" />
         <module name="nemesis-center" />
         <module name="nemesis-common" />
-        <module name="nemesis-config" />
         <module name="nemesis-email" />
         <module name="nemesis-employee" />
         <module name="nemesis-gateway" />
-        <module name="nemesis-mouse" />
         <module name="nemesis-order" />
         <module name="nemesis-system" />
-        <module name="nemesis-tm" />
         <module name="nemesis-web" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="nemesis" target="1.8" />
-      <module name="nemesis-activity" target="1.8" />
-      <module name="nemesis-cargo" target="1.8" />
-      <module name="nemesis-center" target="1.8" />
-      <module name="nemesis-common" target="1.8" />
-      <module name="nemesis-config" target="1.8" />
-      <module name="nemesis-email" target="1.8" />
-      <module name="nemesis-employee" target="1.8" />
-      <module name="nemesis-gateway" target="1.8" />
-      <module name="nemesis-kafka" target="1.8" />
-      <module name="nemesis-kafkamq" target="1.8" />
-      <module name="nemesis-mouse" target="1.8" />
-      <module name="nemesis-order" target="1.8" />
-      <module name="nemesis-parasite" target="1.8" />
-      <module name="nemesis-system" target="1.8" />
-      <module name="nemesis-tm" target="1.8" />
-      <module name="nemesis-web" target="1.8" />
-    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="nemesis-cargo" options="-parameters" />
+      <module name="nemesis-center" options="-parameters" />
+      <module name="nemesis-common" options="-parameters" />
+      <module name="nemesis-email" options="-parameters" />
+      <module name="nemesis-employee" options="-parameters" />
+      <module name="nemesis-gateway" options="-parameters" />
+      <module name="nemesis-order" options="-parameters" />
+      <module name="nemesis-system" options="-parameters" />
+      <module name="nemesis-web" options="-parameters" />
+    </option>
   </component>
 </project>

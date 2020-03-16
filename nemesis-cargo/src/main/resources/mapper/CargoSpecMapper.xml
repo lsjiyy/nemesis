@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lsjyy.nemesis.cargo.dao.CargoSpecMapper">
+
+    <insert id="insert" parameterType="com.lsjyy.nemesis.cargo.pojo.CargoSpec">
+        insert into cargo_spec (cargo_id, spec_name, cover_url, stock, unit_price, status, deal_flag, create_time) values
+        (#{cargoId}, #{specName}, #{coverUrl}, #{stock}, #{unitPrice}, #{status}, #{dealFlag}, sysdate())
+    </insert>
+</mapper>

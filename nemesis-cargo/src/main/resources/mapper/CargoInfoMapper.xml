@@ -2,24 +2,29 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lsjyy.nemesis.cargo.dao.CargoInfoMapper">
 
-    <sql id="baseColumn">
-        cargo_id, cargo_name, status, cover_url, deal_flag, unit, unit_price, direction, inventory
-    </sql>
 
     <insert id="insert" parameterType="com.lsjyy.nemesis.cargo.pojo.CargoInfo">
-        INSERT INTO cargo_info (cargo_id, cargo_name, status, cover_url, deal_flag, unit, unit_price, direction, inventory, update_time, create_time, `explain`)
-        VALUES (#{cargoId}, #{cargoName}, #{status}, #{coverUrl}, #{dealFlag}, #{unit}, #{unitPrice}, #{direction}, #{inventory}, sysdate(), sysdate(), #{explain})
+        insert into cargo_info (cargo_id, group_id, cargo_name, main_cover_url, intro, unit, direction, status, deal_flag, create_time)
+        values (#{cargoId}, #{groupId}, #{cargoName}, #{mainCoverUrl}, #{intro}, #{unit}, #{direction}, #{status}, #{dealFlag}, sysdate())
     </insert>
 
-    <update id="updateInventory">
-        UPDATE cargo_info SET inventory = inventory - #{inventory} WHERE cargo_id = #{cargoId}
-    </update>
-
-    <select id="selectNormalSample" resultType="com.lsjyy.nemesis.cargo.pojo.dto.CargoSampleDTO">
-        SELECT <include refid="baseColumn"/> FROM cargo_info WHERE status = 0 AND deal_flag =0 AND inventory > 0 ORDER BY create_time DESC
+    <select id="selectBackCaro" resultMap="backCargoMap">
+        select a.cargo_id, a.cargo_name, a.status, a.intro, a.main_cover_url, b.group_name, sum(c.stock) as countStock from cargo_info a inner join cargo_group b on a.group_id = b.group_id inner join cargo_spec c on a.cargo_id =c.cargo_id
+         where a.deal_flag = 0
+         <if test="cargoName !='' and cargoName !=null">
+             and cargo_name like concat('%',#{cargoName},'%')
+         </if>
+       group by c.cargo_id  order by a.create_time
     </select>
 
-    <select id="selectByCargoId" resultType="com.lsjyy.nemesis.cargo.pojo.CargoInfo">
-        SELECT <include refid="baseColumn"/> FROM cargo_info WHERE cargo_id = #{cargoId}
-    </select>
+    <resultMap id="backCargoMap" type="com.lsjyy.nemesis.cargo.pojo.dto.BackCargoDTO">
+        <id column="cargo_id" property="cargoId"/>
+        <result column="cargo_name" property="cargoName"/>
+        <result column="status" property="status"/>
+        <result column="intro" property="intro"/>
+        <result column="main_cover_url" property="mainCoverUrl"/>
+        <result column="group_name" property="groupName"/>
+        <result column="countStock" property="countStock"/>
+    </resultMap>
+
 </mapper>

@@ -6,19 +6,17 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * @Authoer LsjYy
- * @DATE 2020-03-04 18:45
- * @Description:
+ * @Author LsjYy
+ * @DATE 2020-03-14 21:01
+ * @Description: 创建商品
  */
 @Data
-public class CreateCargoVO implements Serializable{
-    private String sysUserId;
+public class CreateCargoVO implements Serializable {
     private String cargoName;
-    private String unit;
-    private Integer unitPrice;
-    private String explain;
-    private String coverUrl;
-    private Integer inventory;
+    private String mainCoverUrl;
+    private Long groupId;
+    private String intro;
     private String direction;
-    private List<String> slideList;
+    private String unit;
+    private List<CreateSpecVO> specList;
 }

@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @EnableDiscoveryClient
-@EnableAutoConfiguration
+@SpringBootApplication(scanBasePackages = {"com.lsjyy.nemesis.common","com.lsjyy.nemesis.system"})
 @MapperScan("com.lsjyy.nemesis.system.dao")
 public class NemesisSystemApplication {
     public static void main(String[] args) {

@@ -1,36 +1,27 @@
 package com.lsjyy.nemesis.cargo.service;
 
-import com.alibaba.fastjson.JSONObject;
-import com.codingapi.txlcn.tc.annotation.DTXPropagation;
-import com.codingapi.txlcn.tc.annotation.LcnTransaction;
-import com.codingapi.txlcn.tc.annotation.TxcTransaction;
-import com.lsjyy.nemesis.cargo.dao.CargoInfoMapper;
-import com.lsjyy.nemesis.cargo.dao.CargoSlideMapper;
-import com.lsjyy.nemesis.cargo.dao.CollectCargoMapper;
+import com.lsjyy.nemesis.cargo.dao.*;
 import com.lsjyy.nemesis.cargo.exception.CargoException;
-import com.lsjyy.nemesis.cargo.pojo.CargoInfo;
-import com.lsjyy.nemesis.cargo.pojo.CargoSlide;
-import com.lsjyy.nemesis.cargo.pojo.dto.CargoSampleDTO;
-import com.lsjyy.nemesis.cargo.pojo.dto.ClientCargoDTO;
-import com.lsjyy.nemesis.cargo.pojo.vo.ClientCargoVO;
-import com.lsjyy.nemesis.cargo.pojo.vo.CreateCargoVO;
+import com.lsjyy.nemesis.cargo.pojo.*;
+import com.lsjyy.nemesis.cargo.pojo.dto.BackCargoDTO;
+import com.lsjyy.nemesis.cargo.pojo.dto.GroupDTO;
+import com.lsjyy.nemesis.cargo.pojo.vo.*;
 import com.lsjyy.nemesis.common.domain.StatusType;
-import com.lsjyy.nemesis.common.kafka.KafkaMessage;
-import com.lsjyy.nemesis.common.kafka.KafkaMsgProducer;
-import com.lsjyy.nemesis.common.redis.RedisKey;
-import com.lsjyy.nemesis.common.redis.RedisUtil;
-import com.lsjyy.nemesis.common.utils.PrimaryKeyUtil;
+import com.lsjyy.nemesis.common.page.PageResult;
+import com.lsjyy.nemesis.common.utils.SnowFlake;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 
 /**
  * @Authoer LsjYy
@@ -39,99 +30,137 @@ import java.util.*;
  */
 @Service
 @EnableScheduling
+@Slf4j
 public class CargoServiceImpl implements CargoService {
-    private static final Logger log = LoggerFactory.getLogger(CargoServiceImpl.class);
+
 
     @Autowired
-    private RedisUtil redisUtil;
+    private CargoGroupMapper groupMapper;
     @Autowired
-    private CargoInfoMapper cargoInfoMapper;
+    private CargoInfoMapper infoMapper;
     @Autowired
-    private CollectCargoMapper collectMapper;
-    @Autowired
-    private CargoSlideMapper slideMapper;
+    private CargoSpecMapper specMapper;
 
-    //缓存库存
-    @Scheduled(fixedRate = 90000)
+
+    /**
+     * 添加时删除缓存
+     *
+     * @param vo
+     */
+    @CacheEvict(allEntries = true, value = "cargoGroupCache")
     @Override
-    public void cacheCargoInventory() {
-        log.info("缓存库存");
-        List<CargoSampleDTO> dtoList = cargoInfoMapper.selectNormalSample();
-        dtoList.forEach(dto -> {
-            redisUtil.putString(RedisKey.RUSH + dto.getCargoId(), dto.getInventory());
-        });
-    }
-
-    @Override
-    public List<CargoSampleDTO> getCargoList() {
-        return null;
-    }
-
-
-    @Override
-    public ClientCargoDTO clientCargoInfo(ClientCargoVO vo) {
-        CargoInfo cargoInfo = cargoInfoMapper.selectById(vo.getCargoId());
-        if (cargoInfo == null || cargoInfo.getDealFlag() == StatusType.DELETE || cargoInfo.getStatus() != StatusType.NORMAL) {
-            throw new CargoException("该货物不存在或已被下架");
+    public void createGroup(CreateGroupVO vo) {
+        log.info("request ===>{}", vo);
+        CargoGroup groupName = groupMapper.selectGroupName(vo.getGroupName());
+        if (!Objects.isNull(groupName)) {
+            throw new CargoException("分类名称重复");
         }
-        ClientCargoDTO dto = new ClientCargoDTO(cargoInfo);
-        if (!StringUtils.isEmpty(vo.getMouseId())) {
-            boolean favorite = collectMapper.exist(vo.getCargoId(), vo.getMouseId());
-            dto.setFavorite(favorite);
+        if (!Objects.isNull(vo.getUpGroupId())) {
+            CargoGroup upGroup = groupMapper.selectGroupId(vo.getUpGroupId());
+            if (Objects.isNull(upGroup))
+                throw new CargoException("所选的上级分类不存在");
         }
-        return dto;
+        CargoGroup group = new CargoGroup();
+        group.setUpGroupId(Objects.isNull(vo.getUpGroupId()) ? 0 : vo.getUpGroupId());
+        group.setGroupName(vo.getGroupName());
+        group.setStatus(StatusType.NORMAL);
+        int result = groupMapper.insert(group);
+        if (result == 0)
+            throw new CargoException("创建分类失败");
     }
 
+    /**
+     * 获取分组
+     *
+     * @return
+     */
+    @Cacheable(value = "cargoGroupCache")
     @Override
+    public List<GroupDTO> getGroup() {
+        List<GroupDTO> dtoList = new ArrayList<>();
+        getGroupAll(0L, dtoList);
+        return dtoList;
+    }
+
+    /**
+     * 创建商品
+     *
+     * @param vo
+     */
     @Transactional(rollbackFor = Exception.class)
+    @Override
     public void createCargo(CreateCargoVO vo) {
-        if (StringUtils.isEmpty(vo.getCargoName()) || StringUtils.isEmpty(vo.getUnit()) || Objects.isNull(vo.getUnitPrice())) {
-            throw new CargoException("请安照规定填写");
+        if (StringUtils.isEmpty(vo.getCargoName()) || StringUtils.isEmpty(vo.getDirection()) || StringUtils.isEmpty(vo.getIntro())) {
+            throw new CargoException("请按规定填写");
         }
+        if (Objects.isNull(vo.getSpecList()) || vo.getSpecList().isEmpty())
+            throw new CargoException("请填写规格");
+        CargoGroup group = groupMapper.selectGroupId(vo.getGroupId());
+        if (Objects.isNull(group))
+            throw new CargoException("分类不存在");
+
         CargoInfo cargoInfo = new CargoInfo();
-        //库存
-        if (!Objects.isNull(vo.getInventory())) {
-            cargoInfo.setInventory(vo.getInventory());
-        }
-        //单价
-        cargoInfo.setUnitPrice(vo.getUnitPrice());
-        //名称
+        cargoInfo.setCargoId(SnowFlake.generateId());
+        cargoInfo.setGroupId(vo.getGroupId());
         cargoInfo.setCargoName(vo.getCargoName());
-        //详情
+        cargoInfo.setIntro(vo.getIntro());
         cargoInfo.setDirection(vo.getDirection());
-        //简介
-        cargoInfo.setExplain(vo.getExplain());
-        //单位
         cargoInfo.setUnit(vo.getUnit());
-        //封面
-        cargoInfo.setCoverUrl(vo.getCoverUrl());
-        //cargoId
-        cargoInfo.setCargoId(PrimaryKeyUtil.generateKey("CARGO_"));
-        //状态
-        cargoInfo.setStatus(StatusType.NORMAL);
+        cargoInfo.setMainCoverUrl(vo.getMainCoverUrl());
         cargoInfo.setDealFlag(StatusType.NOT_DELETE);
-        //保存
-        CargoSlide slide = new CargoSlide();
-        cargoInfoMapper.insert(cargoInfo);
-        if (!vo.getSlideList().isEmpty() && vo.getSlideList().size() > 0) {
-            vo.getSlideList().forEach(value -> {
-                slide.setCargoId(cargoInfo.getCargoId());
-                slide.setFileUrl(value);
-                slide.setCreateTime(new Timestamp(System.currentTimeMillis()));
-                slideMapper.insert(slide);
-            });
+        cargoInfo.setStatus(StatusType.NORMAL);
+        infoMapper.insert(cargoInfo);
+        //创建规格
+        CargoSpec spec = new CargoSpec();
+        for (CreateSpecVO specVO : vo.getSpecList()) {
+            if (StringUtils.isEmpty(specVO.getSpecName()) || Objects.isNull(specVO.getUnitPrice()) || specVO.getUnitPrice() == 0)
+                throw new CargoException("请按照规定填写");
+            spec.setCargoId(cargoInfo.getCargoId());
+            spec.setCoverUrl(specVO.getCoverUrl());
+            spec.setDealFlag(StatusType.NOT_DELETE);
+            spec.setSpecName(specVO.getSpecName());
+            spec.setStock(specVO.getStock());
+            spec.setUnitPrice(specVO.getUnitPrice());
+            spec.setStatus(StatusType.NORMAL);
+            specMapper.insert(spec);
         }
 
+    }
+
+    private void getGroupAll(Long upGroupId, List<GroupDTO> dtoList) {
+        List<CargoGroup> groupList = groupMapper.selectUpGroupId(upGroupId);
+        log.info("groupList ===>{}", groupList);
+        for (CargoGroup group : groupList) {
+            GroupDTO dto = new GroupDTO();
+            dto.setGroupId(group.getGroupId());
+            dto.setGroupName(group.getGroupName());
+            dtoList.add(dto);
+            List<GroupDTO> children = new ArrayList<>();
+            dto.setChildren(children);
+            getGroupAll(group.getGroupId(), children);
+        }
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void reduceInventory(KafkaMessage message) throws Exception {
-        cargoInfoMapper.updateInventory(message.getData(), -1);
-        if (!StringUtils.isEmpty(message.getData())) {
-            throw new Exception("ss");
-        }
-        //正常完成,删除此消息
-        redisUtil.deleteKey("kafka" + message.getMessageId());
+    public List<BackCargoDTO> backCargo(String cargoName) {
+        List<BackCargoDTO> list = infoMapper.selectBackCaro(cargoName);
+        return list;
     }
+
+    @Override
+    public void revampGroup(RevampGroupVO vo) {
+        CargoGroup existGroup = groupMapper.selectGroupId(vo.getGroupId());
+        if (Objects.isNull(existGroup))
+            throw new CargoException("要修改的分类不存在");
+        if (!StringUtils.isEmpty(vo.getGroupName()) && !existGroup.getGroupName().equals(vo.getGroupName())) {
+            CargoGroup groupName = groupMapper.selectGroupName(vo.getGroupName());
+            if (!Objects.isNull(groupName))
+                throw new CargoException("名称存在");
+        }
+        int result = groupMapper.updateGroup(vo);
+        if (result == 0)
+            throw new CargoException("出现问题了");
+    }
+
+
 }

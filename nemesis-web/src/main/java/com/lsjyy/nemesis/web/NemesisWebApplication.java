@@ -21,11 +21,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  */
 
 
-@EnableEurekaClient
 @EnableDiscoveryClient
 @EnableFeignClients  //开启feign功能
 @SpringBootApplication(scanBasePackages = {"com.lsjyy.nemesis.common","com.lsjyy.nemesis.web"})
-@EnableAutoConfiguration
 @RefreshScope
 public class NemesisWebApplication {
 

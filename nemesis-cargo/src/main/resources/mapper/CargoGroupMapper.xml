@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lsjyy.nemesis.cargo.dao.CargoGroupMapper">
+
+    <sql id="baseColumn">
+        group_id, group_name, status, up_group_id
+    </sql>
+
+    <insert id="insert" parameterType="com.lsjyy.nemesis.cargo.pojo.CargoGroup" useGeneratedKeys="true"
+            keyColumn="groupId">
+        insert into cargo_group (group_name, status, up_group_id, create_time) values (#{groupName}, #{status}, #{upGroupId}, sysdate())
+    </insert>
+
+    <update id="updateGroup" parameterType="com.lsjyy.nemesis.cargo.pojo.vo.RevampGroupVO">
+        update cargo_group set group_id = #{groupId}
+        <if test="groupName !='' and groupName !=null">
+            , group_name = #{groupName}
+        </if>
+        <if test="status !=null">
+            ,status = #{status}
+        </if>
+        where group_id = #{groupId}
+    </update>
+
+    <select id="selectGroupName" resultType="com.lsjyy.nemesis.cargo.pojo.CargoGroup">
+        select
+        <include refid="baseColumn"/>
+        from cargo_group where group_name = #{groupName}
+    </select>
+
+    <select id="selectGroupId" resultType="com.lsjyy.nemesis.cargo.pojo.CargoGroup">
+        select
+        <include refid="baseColumn"/>
+        from cargo_group where group_id = #{groupId}
+    </select>
+
+    <select id="selectUpGroupId" resultType="com.lsjyy.nemesis.cargo.pojo.CargoGroup">
+        select
+        <include refid="baseColumn"/>
+        from cargo_group where up_group_id = #{upGroupId}
+    </select>
+</mapper>

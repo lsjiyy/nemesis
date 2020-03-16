@@ -1,21 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/nemesis-web/pom.xml" />
-        <option value="$PROJECT_DIR$/nemesis-system/pom.xml" />
-        <option value="$PROJECT_DIR$/nemesis-center/pom.xml" />
-        <option value="$PROJECT_DIR$/nemesis-gateway/pom.xml" />
-        <option value="$PROJECT_DIR$/nemesis-employee/pom.xml" />
-        <option value="$PROJECT_DIR$/nemesis-cargo/pom.xml" />
-        <option value="$PROJECT_DIR$/nemesis-activity/pom.xml" />
-        <option value="$PROJECT_DIR$/nemesis-mouse/pom.xml" />
-        <option value="$PROJECT_DIR$/nemesis-email/pom.xml" />
-        <option value="$PROJECT_DIR$/nemesis-order/pom.xml" />
-        <option value="$PROJECT_DIR$/nemesis-tm/pom.xml" />
-        <option value="$PROJECT_DIR$/nemesis-config/pom.xml" />
       </list>
     </option>
   </component>

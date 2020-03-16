@@ -48,7 +48,7 @@ public class RedisConfig extends CachingConfigurerSupport {
     @Bean
     public RedisCacheManager cacheManager(@Autowired RedisConnectionFactory factory) {
         RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofDays(1)); //缓存有效期一天
+                .entryTtl(Duration.ofMinutes(10)); //缓存有效期一天
         return RedisCacheManager
                 .builder(RedisCacheWriter.nonLockingRedisCacheWriter(factory))
                 .cacheDefaults(configuration).build();

@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
 /**
@@ -21,8 +22,15 @@ public class SystemKafkaReceiver {
     private SystemService systemService;
 
     @KafkaListener(topics = SYSTEM_TOPIC)
-    public void onMessage(String message) {
+    public void onMessage(String message, Acknowledgment ack) {
         log.info("收到的消息 ===>{}", message);
-        systemService.recordLog(message);
+        try {
+
+            systemService.recordLog(message);
+        } catch (Exception e) {
+
+        } finally {
+            ack.acknowledge();
+        }
     }
 }

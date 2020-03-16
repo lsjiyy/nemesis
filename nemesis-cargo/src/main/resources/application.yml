@@ -11,12 +11,13 @@ spring:
 
 
 #mybatis 配置
-mybatis-plus:
+mybatis:
+  typeAliasesPackage:  com.lsjyy.nemesis.cargo.pojo
+  mapperLocations: classpath*:**/mapper/*Mapper.xml #mapper扫描
   configuration:
+    mapUnderscoreToCamelCase: true
     default-fetch-size: 100
     default-statement-timeout: 30
-  mapper-locations: classpath*:**/mapper/*Mapper.xml #mapper扫描
-  type-aliases-package: com.lsjyy.nemesis.cargo.pojo
 
 #开启断路器
 feign.hystrix.enabled: true
